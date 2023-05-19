@@ -5,4 +5,6 @@ module com.example.nuclearthrone {
 
     opens com.example.nuclearthrone to javafx.fxml;
     exports com.example.nuclearthrone;
+    exports control;
+    opens control to javafx.fxml;
 }
