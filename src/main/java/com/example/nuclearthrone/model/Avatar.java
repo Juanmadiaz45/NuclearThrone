@@ -20,6 +20,10 @@ public class Avatar {
         this.bullets = new ArrayList<>();
     }
 
+    public Vector getPosition(){
+        return position;
+    }
+
     public void paint() {
         graphicsContext.setFill(Color.BLUE);
         graphicsContext.fillOval(position.getX(), position.getY(), size, size);
