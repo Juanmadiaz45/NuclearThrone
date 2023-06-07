@@ -12,6 +12,7 @@ public class Avatar {
     private GraphicsContext graphicsContext;
     private List<Bullet> bullets;
 
+
     public Avatar(Canvas canvas, Vector position) {
         this.canvas = canvas;
         this.graphicsContext = canvas.getGraphicsContext2D();

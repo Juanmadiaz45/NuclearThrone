@@ -36,28 +36,19 @@ public class HelloController implements Initializable {
     private boolean right = false;
     public void onKeyReleased(KeyEvent event){
         switch (event.getCode()){
-            case LEFT: left = false; break;
-            case UP: up = false; break;
-            case RIGHT: right = false; break;
-            case DOWN: down = false; break;
-            case A: left = false; break;
-            case W: up = false; break;
-            case S: down = false; break;
-            case D: right = false; break;
-
+            case LEFT, A: left = false; break;
+            case UP, W: up = false; break;
+            case RIGHT, D: right = false; break;
+            case DOWN, S: down = false; break;
         }
     }
     public void onKeyPressed(KeyEvent event){
         System.out.println(event.getCode());
         switch (event.getCode()){
-            case LEFT: left = true; break;
-            case UP: up = true; break;
-            case RIGHT: right = true; break;
-            case DOWN: down = true; break;
-            case A: left = true; break;
-            case W: up = true; break;
-            case S: down = true; break;
-            case D: right = true; break;
+            case LEFT, A: left = true; break;
+            case UP, W: up = true; break;
+            case RIGHT, D: right = true; break;
+            case DOWN, S: down = true; break;
         }
     }
 
