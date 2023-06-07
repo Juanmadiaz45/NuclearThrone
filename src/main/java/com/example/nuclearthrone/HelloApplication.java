@@ -14,13 +14,7 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("WelcomeView.fxml"));
-        Scene scene = new Scene((Region) fxmlLoader.load());
-        Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
-        stage.setX(bounds.getMinX());
-        stage.setY(bounds.getMinY());
-        stage.setWidth(bounds.getWidth());
-        stage.setHeight(bounds.getHeight());
+        Scene scene = new Scene((Region) fxmlLoader.load(), 900, 700);
 
         stage.setTitle("Hello!");
         stage.setScene(scene);
@@ -34,18 +28,12 @@ public class HelloApplication extends Application {
 
     public static void showWindow(String fxml){
 
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource(fxml+".fxml"));
-        Scene scene = null;
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource(fxml + ".fxml"));
+        Scene scene;
         try {
-            scene = new Scene((Region)fxmlLoader.load());
+            scene = new Scene((Region) fxmlLoader.load(), 900, 700); // Cambiar el tamaño de la escena
             Stage stage = new Stage();
             stage.setScene(scene);
-            Screen screen = Screen.getPrimary();
-            Rectangle2D bounds = screen.getVisualBounds();
-            stage.setX(bounds.getMinX());
-            stage.setY(bounds.getMinY());
-            stage.setWidth(bounds.getWidth());
-            stage.setHeight(bounds.getHeight());
             stage.show();
         } catch (IOException e) {
             throw new RuntimeException(e);
