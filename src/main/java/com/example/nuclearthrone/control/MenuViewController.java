@@ -38,16 +38,22 @@ public class MenuViewController implements Initializable {
     @FXML
     public void onFacilButton(ActionEvent actionEvent) {
         //comenzar el juego en modo facil
+        HelloApplication.hideWindow((Stage) MenuTitle.getScene().getWindow());
+        HelloApplication.showWindow("GameView");
     }
 
     @FXML
     public void onMedioButton() {
         //comenzar el juego en modo medio
+        HelloApplication.hideWindow((Stage) MenuTitle.getScene().getWindow());
+        HelloApplication.showWindow("GameView");
 
     }
 
     public void onDificilButton() {
         //comenzar el juego en modo dificil
+        HelloApplication.hideWindow((Stage) MenuTitle.getScene().getWindow());
+        HelloApplication.showWindow("GameView");
 
     }
 }

@@ -1,11 +1,15 @@
 package com.example.nuclearthrone.control;
 
 
+import com.example.nuclearthrone.HelloApplication;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -21,6 +25,8 @@ public class GameViewController implements Initializable {
         canvas.setFocusTraversable(true);
         canvas.setOnKeyPressed(this::onKeyPressed);
         canvas.setOnKeyReleased(this::onKeyReleased);
+        gc.setFill(Color.GREY);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
     private boolean left = false;
@@ -43,5 +49,10 @@ public class GameViewController implements Initializable {
             case RIGHT, D: right = true; break;
             case DOWN, S: down = true; break;
         }
+    }
+
+    public void onReturnButton(ActionEvent actionEvent) {
+        HelloApplication.hideWindow((Stage) canvas.getScene().getWindow());
+        HelloApplication.showWindow("MenuView");
     }
 }

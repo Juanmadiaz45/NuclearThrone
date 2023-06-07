@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="900.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.nuclearthrone.control.MenuViewController">
+<AnchorPane prefHeight="700.0" prefWidth="900.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.nuclearthrone.control.MenuViewController">
    <children>
       <Label fx:id="MenuTitle" layoutX="375.0" layoutY="150.0" prefHeight="58.0" prefWidth="200.0" text="MENU" textAlignment="CENTER" textFill="WHITE">
          <font>
