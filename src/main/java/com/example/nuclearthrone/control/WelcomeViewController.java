@@ -9,7 +9,8 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class WelcomeViewControler implements Initializable {
+public class WelcomeViewController implements Initializable {
+
     @FXML
     private Button playButton;
 
