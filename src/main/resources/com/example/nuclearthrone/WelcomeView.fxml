@@ -5,20 +5,23 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="391.0" prefWidth="527.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.nuclearthrone.control.WelcomeViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.nuclearthrone.control.WelcomeViewController">
    <children>
-      <ImageView fitHeight="400.0" fitWidth="533.0" layoutX="-1.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitWidth="900.0" fitHeight="700.0" layoutX="0.0" layoutY="0.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@Images/8715883.gif" />
-         </image></ImageView>
-      <Button fx:id="playButton" onAction="#onPlayButton" layoutX="221.0" layoutY="317.0" mnemonicParsing="false" style="-fx-background-color: #e6f398;" text="PLAY" textAlignment="CENTER">
+         </image>
+      </ImageView>
+      <Button fx:id="playButton" onAction="#onPlayButton" layoutX="400.0" layoutY="600.0" mnemonicParsing="false" style="-fx-background-color: #e6f398;" text="PLAY" textAlignment="CENTER">
          <font>
             <Font name="Arial Black" size="20.0" />
-         </font></Button>
-      <ImageView fitHeight="56.0" fitWidth="233.0" layoutX="170.0" layoutY="68.0" pickOnBounds="true" preserveRatio="true">
+         </font>
+      </Button>
+      <ImageView fitWidth="450.0" fitHeight="150.0" layoutX="225.0" layoutY="100.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@Images/MainTitle.png" />
-         </image></ImageView>
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
+

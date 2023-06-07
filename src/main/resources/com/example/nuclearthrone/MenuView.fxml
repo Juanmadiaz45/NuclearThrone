@@ -7,39 +7,41 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.nuclearthrone.control.MenuViewController">
+<AnchorPane prefHeight="700.0" prefWidth="900.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.nuclearthrone.control.MenuViewController">
    <children>
-      <Label fx:id="MenuTitle" layoutX="262.0" layoutY="43.0" prefHeight="41.0" prefWidth="107.0" text="MENU" textAlignment="CENTER" textFill="WHITE">
+      <Label fx:id="MenuTitle" layoutX="375.0" layoutY="150.0" prefHeight="58.0" prefWidth="200.0" text="MENU" textAlignment="CENTER" textFill="WHITE">
          <font>
-            <Font name="Arial Black" size="32.0" />
+            <Font name="Arial Black" size="44.0" />
          </font>
       </Label>
-      <Button fx:id="returnButton" onAction="#onReturnButton" layoutX="14.0" layoutY="18.0" mnemonicParsing="false" style="-fx-background-color: #e6f398;" text="Return" textAlignment="CENTER">
+      <Button fx:id="returnButton" onAction="#onReturnButton" layoutX="21.0" layoutY="28.0" mnemonicParsing="false" style="-fx-background-color: #e6f398;" text="Return" textAlignment="CENTER">
          <font>
-            <Font name="Arial Black" size="12.0" />
+            <Font name="Arial Black" size="16.0" />
          </font>
       </Button>
-      <ImageView fitHeight="25.0" fitWidth="28.0" layoutX="300.0" layoutY="98.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+      <ImageView fitHeight="42.0" fitWidth="47.0" layoutX="415.0" layoutY="240.0" pickOnBounds="true" preserveRatio="true" smooth="false">
          <image>
             <Image url="@Images/EstrellaZoom.gif" />
-         </image></ImageView>
-      <Label fx:id="ChooseLevelText" layoutX="225.0" layoutY="136.0" text="Escoge un nivel para jugar" textFill="WHITE">
+         </image>
+      </ImageView>
+      <Label fx:id="ChooseLevelText" layoutX="325.0" layoutY="290.0" text="Escoge un nivel para jugar" textFill="WHITE">
          <font>
-            <Font name="Arial Black" size="12.0" />
+            <Font name="Arial Black" size="16.0" />
          </font>
       </Label>
-      <Button onAction="#onFacilButton" layoutX="97.0" layoutY="188.0" mnemonicParsing="false" style="-fx-background-color: #e6f398;" text="Facil">
+      <Button onAction="#onFacilButton" layoutX="200.0" layoutY="360.0" mnemonicParsing="false" style="-fx-background-color: #e6f398;" text="Facil">
          <font>
-            <Font name="Arial Black" size="12.0" />
+            <Font name="Arial Black" size="16.0" />
          </font>
       </Button>
-      <Button onAction="#onMedioButton" layoutX="287.0" layoutY="188.0" mnemonicParsing="false" style="-fx-background-color: #e6f398;" text="Medio">
+      <Button onAction="#onMedioButton" layoutX="400.0" layoutY="360.0" mnemonicParsing="false" style="-fx-background-color: #e6f398;" text="Medio">
          <font>
-            <Font name="Arial Black" size="12.0" />
-         </font></Button>
-      <Button onAction="#onDificilButton" layoutX="469.0" layoutY="188.0" mnemonicParsing="false" style="-fx-background-color: #e6f398;" text="Dificil">
+            <Font name="Arial Black" size="16.0" />
+         </font>
+      </Button>
+      <Button onAction="#onDificilButton" layoutX="600.0" layoutY="360.0" mnemonicParsing="false" style="-fx-background-color: #e6f398;" text="Dificil">
          <font>
-            <Font name="Arial Black" size="12.0" />
+            <Font name="Arial Black" size="16.0" />
          </font>
       </Button>
    </children>
