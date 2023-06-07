@@ -1,5 +1,6 @@
-package com.example.nuclearthrone;
+package com.example.nuclearthrone.control;
 
+import com.example.nuclearthrone.HelloApplication;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,7 +14,7 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class HelloController implements Initializable {
+public class MenuViewController implements Initializable {
 
     @FXML
     private Button ReturnButton;
