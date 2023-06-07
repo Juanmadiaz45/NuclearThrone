@@ -17,81 +17,37 @@ import java.util.ResourceBundle;
 public class MenuViewController implements Initializable {
 
     @FXML
-    private Button ReturnButton;
-    @FXML
-    private Canvas canvas;
-    @FXML
     private Label MenuTitle;
     @FXML
     private Label ChooseLevelText;
-    @FXML
-    private Button playButton;
-    private GraphicsContext gc;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        gc = canvas.getGraphicsContext2D();
-        canvas.setFocusTraversable(true);
-        canvas.setOnKeyPressed(this::onKeyPressed);
-        canvas.setOnKeyReleased(this::onKeyReleased);
-
-    }
-
-    private boolean left = false;
-    private boolean up = false;
-    private boolean down = false;
-    private boolean right = false;
-    public void onKeyReleased(KeyEvent event){
-        switch (event.getCode()){
-            case LEFT, A: left = false; break;
-            case UP, W: up = false; break;
-            case RIGHT, D: right = false; break;
-            case DOWN, S: down = false; break;
-        }
-    }
-    public void onKeyPressed(KeyEvent event){
-        System.out.println(event.getCode());
-        switch (event.getCode()){
-            case LEFT, A: left = true; break;
-            case UP, W: up = true; break;
-            case RIGHT, D: right = true; break;
-            case DOWN, S: down = true; break;
-        }
-    }
-
-    @FXML
-
-    protected void onFacil(){
-
-
 
     }
 
     @FXML
-
-    protected void onMedio(){
-
-
-
-    }
-    @FXML
-
-    protected void onDificil(){
-
-
-
-    }
-
-
-    @FXML
-    protected void onReturn(){
-
+    protected void onReturnButton(){
+        //Volver a la pantalla de bienvenida
         HelloApplication.hideWindow((Stage) MenuTitle.getScene().getWindow());
-        HelloApplication.showWindow("MenuView");
-
+        HelloApplication.showWindow("WelcomeView");
     }
 
 
-    public void onHelloButtonClick(ActionEvent actionEvent) {
+    @FXML
+    public void onFacilButton(ActionEvent actionEvent) {
+        //comenzar el juego en modo facil
+    }
+
+    @FXML
+    public void onMedioButton() {
+        //comenzar el juego en modo medio
+
+    }
+
+    public void onDificilButton() {
+        //comenzar el juego en modo dificil
+
     }
 }

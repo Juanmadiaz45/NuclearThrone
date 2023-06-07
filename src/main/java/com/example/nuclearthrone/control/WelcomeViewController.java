@@ -9,18 +9,21 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class WelcomeViewControler implements Initializable {
+public class WelcomeViewController implements Initializable {
 
     @FXML
-    private Button PlayButton;
+    private Button playButton;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        PlayButton.setOnAction(action ->{
-            HelloApplication.hideWindow((Stage) PlayButton.getScene().getWindow());
-            HelloApplication.showWindow("MenuView");
-        });
 
+    }
+
+    @FXML
+    protected void onPlayButton(){
+
+        HelloApplication.hideWindow((Stage) playButton.getScene().getWindow());
+        HelloApplication.showWindow("MenuView");
     }
 }
