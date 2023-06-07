@@ -8,15 +8,21 @@ import javafx.scene.control.Label;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class HelloController implements Initializable {
+
+    @FXML
+    private Button ReturnButton;
     @FXML
     private Canvas canvas;
     @FXML
-    private Label welcomeText;
+    private Label MenuTitle;
+    @FXML
+    private Label ChooseLevelText;
     @FXML
     private Button playButton;
     private GraphicsContext gc;
@@ -50,6 +56,38 @@ public class HelloController implements Initializable {
             case RIGHT, D: right = true; break;
             case DOWN, S: down = true; break;
         }
+    }
+
+    @FXML
+
+    protected void onFacil(){
+
+
+
+    }
+
+    @FXML
+
+    protected void onMedio(){
+
+
+
+    }
+    @FXML
+
+    protected void onDificil(){
+
+
+
+    }
+
+
+    @FXML
+    protected void onReturn(){
+
+        HelloApplication.hideWindow((Stage) MenuTitle.getScene().getWindow());
+        HelloApplication.showWindow("MenuView");
+
     }
 
 
