@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.*?>
 <?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
@@ -11,6 +10,9 @@
     </padding>
     <children>
         <Canvas fx:id="canvas" height="700.0" width="900.0" />
+        <VBox alignment="TOP_LEFT" spacing="10.0" style="-fx-background-color: transparent;">
+            <ProgressBar fx:id="avatarLife" progress="0.0" prefWidth="200.0" />
+        </VBox>
         <VBox alignment="BOTTOM_LEFT" spacing="10.0" style="-fx-background-color: transparent;">
             <Button mnemonicParsing="false" text="END GAME" onAction="#onReturnButton" />
         </VBox>

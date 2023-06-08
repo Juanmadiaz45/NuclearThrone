@@ -38,7 +38,7 @@ public class Avatar {
         this.direction = direction;
         bounds = new Rectangle(pos.x, pos.y, 50, 50);
         bullets = new ArrayList<>();
-        hearts = 5;
+        hearts = 3;
         isAlive = true;
     }
 
@@ -67,21 +67,22 @@ public class Avatar {
         direction.y = amp*Math.sin(Math.toRadians(angle));
     }
 
-    public void moveForward(){
-
-        int factor = 20;
-
-        if((pos.x + direction.x > factor && pos.x + direction.x < canvas.getWidth() - factor) &&
-                (pos.y + direction.y > factor && pos.y + direction.y < canvas.getHeight() - factor)){
-
-            pos.x += direction.x;
-            pos.y += direction.y;
-
-        } else if (name.equals("CPU")) {
-            changeAngle(180);
-        }
+    public void moveAvatar(){
 
     }
+//    public void moveForward(){
+//
+//        if((pos.x + direction.x > factor && pos.x + direction.x < canvas.getWidth() - factor) &&
+//                (pos.y + direction.y > factor && pos.y + direction.y < canvas.getHeight() - factor)){
+//
+//            pos.x += direction.x;
+//            pos.y += direction.y;
+//
+//        } else if (name.equals("CPU")) {
+//            changeAngle(180);
+//        }
+//
+//    }
 
     public void moveBackward() {
 
@@ -166,5 +167,13 @@ public class Avatar {
 
     public void setHearts(int hearts) {
         this.hearts = hearts;
+    }
+
+    public Vector getPos() {
+        return pos;
+    }
+
+    public void setPos(Vector pos) {
+        this.pos = pos;
     }
 }

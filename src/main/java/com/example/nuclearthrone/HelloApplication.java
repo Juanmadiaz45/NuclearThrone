@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class HelloApplication extends Application {
             scenes.put("MenuView", menuScene);
 
             FXMLLoader gameLoader = new FXMLLoader(HelloApplication.class.getResource("GameView.fxml"));
-            AnchorPane gameRoot = gameLoader.load();
+            StackPane gameRoot = gameLoader.load();
             Scene gameScene = new Scene(gameRoot);
             scenes.put("GameView", gameScene);
         } catch (IOException e) {

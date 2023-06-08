@@ -2,14 +2,12 @@ package com.example.nuclearthrone.control;
 
 import com.example.nuclearthrone.HelloApplication;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import com.example.nuclearthrone.model.*;
 import javafx.scene.paint.Color;
@@ -26,42 +24,34 @@ public class GameViewController implements Initializable {
     private GraphicsContext gc;
     private boolean isRunning = true;
     private Avatar avatar;
-    private Image avatarImg;
 
     @FXML
     private ProgressBar avatarLife;
-
     @FXML
     private ProgressBar enemy1Life;
-
     @FXML
     private ProgressBar enemy2Life;
-
     @FXML
     private ProgressBar enemy3Life;
 
     private Avatar enemy1;
     private Image enemy1Img;
-
     private Avatar enemy2;
     private Image enemy2Img;
-
     private Avatar enemy3;
     private Image enemy1Im3;
 
     private List<Avatar> avatars;
     private List<Obstacle> obstacles;
 
-    boolean Wpressed = false;
-    boolean Apressed = false;
-    boolean Spressed = false;
-    boolean Dpressed = false;
+    boolean up = false;
+    boolean left = false;
+    boolean down = false;
+    boolean right = false;
 
     public static final int RELOAD_FACTOR = 10;
 
     public GameViewController(){
-        avatarImg = new Image ("file:"+ HelloApplication.class.getResource("RebelWalk1.png").getPath());
-
         avatars = new ArrayList<>();
         obstacles = new ArrayList<>();
     }
@@ -70,23 +60,23 @@ public class GameViewController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         gc = canvas.getGraphicsContext2D();
         canvas.setFocusTraversable(true);
-
         canvas.setOnKeyPressed(this::onKeyPressed);
+        canvas.setOnKeyReleased(this::onKeyReleased);
 
+        Image avatarImg = new Image ("file:"+ HelloApplication.class.getResource("RebelWalk1.png").getPath());
         avatar = new Avatar(Game.getInstance().getPlayer(), canvas, avatarImg, Color.YELLOW, new Vector(50, 50), new Vector(2, 2));
-
         avatars.add(avatar);
 
         Game.getInstance().setAvatars(avatars);
 
         avatarLife.setProgress(1);
-        enemy1Life.setProgress(1);
-        enemy2Life.setProgress(1);
-        enemy3Life.setProgress(1);
+//        enemy1Life.setProgress(1);
+//        enemy2Life.setProgress(1);
+//        enemy3Life.setProgress(1);
 
         setUpWalls();
 
-        enemyAI();
+        //enemyAI();
 
         draw();
 
@@ -104,9 +94,9 @@ public class GameViewController implements Initializable {
                             drawObstacles();
 
                             renderAvatar(avatar, avatarLife);
-                            renderAvatar(enemy1, enemy1Life);
-                            renderAvatar(enemy2, enemy1Life);
-                            renderAvatar(enemy3, enemy1Life);
+//                            renderAvatar(enemy1, enemy1Life);
+//                            renderAvatar(enemy2, enemy2Life);
+//                            renderAvatar(enemy3, enemy3Life);
 
                             int count = 0;
                             for (Avatar avatar : avatars) {
@@ -147,40 +137,63 @@ public class GameViewController implements Initializable {
     }
 
     private void doKeyboardActions() {
+        //falta las colisiones con las paredes!!!!
 
-        int angle = 4;
+        if(up  ){// &&!detectCollisionUp(avatar)
+            avatar.pos.setY(avatar.pos.getY()-3);
+        }
+        if (left && !detectCollisionLeft(avatar)) {
+            avatar.pos.setX(avatar.pos.getX()-3);
+        }
+        if (down ) {// && !detectCollisionDown(avatar)
+            avatar.pos.setY(avatar.pos.getY()+3);
+        }
+        if (right && !detectCollisionRight(avatar)) {
+            avatar.pos.setX(avatar.pos.getX()+3);
+        }
 
-        if (Wpressed && !detectCollisionForward(avatar))
-            avatar.moveForward();
-
-        if (Spressed && !detectCollisionBackward(avatar))
-            avatar.moveBackward();
-
-        if (Apressed) avatar.changeAngle(-angle);
-        if (Dpressed) avatar.changeAngle(angle);
 
     }
-
-    private void onKeyPressed(KeyEvent keyEvent) {
-
-        //Tank 1
-        if (keyEvent.getCode() == KeyCode.W) Wpressed = true;
-        if (keyEvent.getCode() == KeyCode.A) Apressed = true;
-        if (keyEvent.getCode() == KeyCode.S) Spressed = true;
-        if (keyEvent.getCode() == KeyCode.D) Dpressed = true;
-        if (keyEvent.getCode() == KeyCode.R) avatar.reload();
-
-        if (keyEvent.getCode() == KeyCode.SPACE)
-            if(avatar.hasBullets()) avatar.shoot();
+    public void onKeyReleased(KeyEvent event){
+        switch (event.getCode()){
+            case LEFT, A: left = false; break;
+            case UP, W: up = false; break;
+            case RIGHT, D: right = false; break;
+            case DOWN, S: down = false; break;
+        }
     }
+    public void onKeyPressed(KeyEvent event) {
+        System.out.println(event.getCode());
+        switch (event.getCode()) {
+            case LEFT, A:
+                left = true;
+                break;
+            case UP, W:
+                up = true;
+                break;
+            case RIGHT, D:
+                right = true;
+                break;
+            case DOWN, S:
+                down = true;
+                break;
+            case R:
+                avatar.reload();
+                break;
+            case SPACE:
+                if (avatar.hasBullets()) avatar.shoot();
+                break;
+        }
+    }
+
 
     private void setUpWalls(){
 
-        Obstacle obstacle1 = new Obstacle(canvas, 150, 150);
+        Obstacle obstacle1 = (new Obstacle(canvas, 150, 150));
         Obstacle obstacle2 = new Obstacle(canvas, 150, obstacle1.bounds.getY() + obstacle1.HEIGHT);
         Obstacle obstacle3 = new Obstacle(canvas, 150, obstacle2.bounds.getY() + obstacle1.HEIGHT);
-        Obstacle obstacle4 = new Obstacle(canvas, 190, obstacle1.bounds.getX());
-        Obstacle obstacle5 = new Obstacle(canvas, 230, obstacle1.bounds.getX());
+        Obstacle obstacle4 = new Obstacle(canvas, 190, obstacle1.bounds.getY());
+        Obstacle obstacle5 = new Obstacle(canvas, 230, obstacle1.bounds.getY());
 
         Obstacle obstacle6 = new Obstacle(canvas,150,450);
         Obstacle obstacle7 = new Obstacle(canvas, 150, 410);
@@ -200,13 +213,6 @@ public class GameViewController implements Initializable {
         Obstacle obstacle19 = new Obstacle(canvas, 564, 450);
         Obstacle obstacle20 = new Obstacle(canvas, 524, 450);
 
-        Obstacle obstacle21 = new Obstacle(canvas, 377, 300);
-        Obstacle obstacle22 = new Obstacle(canvas, 377, 260);
-        Obstacle obstacle23 = new Obstacle(canvas, 377, 340);
-        Obstacle obstacle24 = new Obstacle(canvas, 337, 300);
-        Obstacle obstacle25 = new Obstacle(canvas, 417, 300);
-
-        obstacles.add(obstacle1);
         obstacles.add(obstacle2);
         obstacles.add(obstacle3);
         obstacles.add(obstacle4);
@@ -226,11 +232,11 @@ public class GameViewController implements Initializable {
         obstacles.add(obstacle18);
         obstacles.add(obstacle19);
         obstacles.add(obstacle20);
-        obstacles.add(obstacle21);
-        obstacles.add(obstacle22);
-        obstacles.add(obstacle23);
-        obstacles.add(obstacle24);
-        obstacles.add(obstacle25);
+        obstacles.add(new Obstacle(canvas, 377, 300));
+        obstacles.add(new Obstacle(canvas, 377, 260));
+        obstacles.add(new Obstacle(canvas, 377, 340));
+        obstacles.add(new Obstacle(canvas, 337, 300));
+        obstacles.add(new Obstacle(canvas, 417, 300));
 
     }
 
@@ -249,75 +255,72 @@ public class GameViewController implements Initializable {
             life.setProgress(0);
     }
 
-    public boolean detectCollisionForward(Avatar avatar){
+    public boolean detectCollisionRight(Avatar avatar){
+
 
         for(int i = 0; i < obstacles.size(); i++){
 
-            if(obstacles.get(i).bounds.intersects(avatar.pos.x + avatar.direction.x - 25, avatar.pos.y + avatar.direction.y - 25, 50, 50))
+            if( obstacles.get(i).bounds.intersects(
+                    avatar.pos.x + avatar.direction.x - 25, avatar.pos.y + avatar.direction.y - 25, 50, 50))
                 return true;
-
         }
-
         return false;
-
     }
 
-    public boolean detectCollisionBackward(Avatar avatar){
-
+    public boolean detectCollisionLeft(Avatar avatar){
         for(int i = 0; i < obstacles.size(); i++){
-
             if(obstacles.get(i).bounds.intersects(avatar.pos.x - avatar.direction.x - 25, avatar.pos.y - avatar.direction.y - 25, 50, 50))
                 return true;
-
         }
-
         return false;
-
     }
 
-    private void enemyAI(){
 
-        new Thread(()->{
 
-            while (enemy1.isAlive){
 
-                if(!enemy1.hasBullets()) enemy1.reload();
+//    private void enemyAI(){
+//
+//        new Thread(()->{
+//
+//            while (enemy1.isAlive){
+//
+//                if(!enemy1.hasBullets()) enemy1.reload();
+//
+//                //(1-3)
+//                int random = (int)(Math.random()*(3-1+1)+1);
+//
+//                if(random == 1){
+//                    for (int i = 0; i < 20; i++){
+//                        if(!detectCollisionForward(enemy1))
+//                            //enemy1.moveForward();
+//                        else
+//                            enemy1.changeAngle(180);
+//                    }
+//                }
+//
+//                if(random == 2){
+//                    enemy1.changeAngle(-25);
+//                    enemy1.shoot();
+//                }
+//
+//                if(random == 3){
+//                    enemy1.changeAngle(25);
+//                    enemy1.shoot();
+//                }
+//
+//                try {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//
+//            }
+//
+//        }).start();
+//
+//    }
 
-                //(1-3)
-                int random = (int)(Math.random()*(3-1+1)+1);
-
-                if(random == 1){
-                    for (int i = 0; i < 20; i++){
-                        if(!detectCollisionForward(enemy1))
-                            enemy1.moveForward();
-                        else
-                            enemy1.changeAngle(180);
-                    }
-                }
-
-                if(random == 2){
-                    enemy1.changeAngle(-25);
-                    enemy1.shoot();
-                }
-
-                if(random == 3){
-                    enemy1.changeAngle(25);
-                    enemy1.shoot();
-                }
-
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-
-        }).start();
-
-    }
-
-    public void onReturnButton(ActionEvent actionEvent) {
+    public void onReturnButton() {
         HelloApplication.hideWindow((Stage) canvas.getScene().getWindow());
         HelloApplication.showWindow("MenuView");
     }
