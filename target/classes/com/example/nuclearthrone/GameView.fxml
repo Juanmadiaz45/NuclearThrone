@@ -12,14 +12,19 @@
         <Canvas fx:id="canvas" height="700.0" width="900.0" />
         <VBox alignment="TOP_LEFT" spacing="10.0" style="-fx-background-color: transparent;">
             <ProgressBar fx:id="avatarLife" progress="0.0" prefWidth="200.0" />
+            <ProgressBar fx:id="avatarBullets" progress="0.0" prefWidth="200.0" />
+            <Label text="Jugador" style="-fx-font-family: Arial; -fx-font-size: 16px;" />
         </VBox>
         <VBox alignment="BOTTOM_LEFT" spacing="10.0" style="-fx-background-color: transparent;">
             <Button mnemonicParsing="false" text="END GAME" onAction="#onReturnButton" />
         </VBox>
         <VBox alignment="TOP_RIGHT" spacing="10.0" style="-fx-background-color: transparent;">
             <ProgressBar fx:id="enemy1Life" progress="0.0" prefWidth="200.0" />
+            <Label text="Enemigo 1" style="-fx-font-family: Arial; -fx-font-size: 16px;" />
             <ProgressBar fx:id="enemy2Life" progress="0.0" prefWidth="200.0" />
+            <Label text="Enemigo 2" style="-fx-font-family: Arial; -fx-font-size: 16px;" />
             <ProgressBar fx:id="enemy3Life" progress="0.0" prefWidth="200.0" />
+            <Label text="Enemigo 3" style="-fx-font-family: Arial; -fx-font-size: 16px;" />
         </VBox>
     </children>
 </StackPane>

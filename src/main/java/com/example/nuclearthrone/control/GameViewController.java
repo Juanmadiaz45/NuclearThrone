@@ -36,6 +36,8 @@ public class GameViewController implements Initializable {
     private ProgressBar enemy2Life;
     @FXML
     private ProgressBar enemy3Life;
+    @FXML
+    private ProgressBar avatarBullets;
     private Avatar enemy1;
     private Image enemy1Img;
     private Avatar enemy2;
@@ -87,6 +89,9 @@ public class GameViewController implements Initializable {
         enemy2Life.setProgress(1);
         enemy3Life.setProgress(1);
 
+        avatarBullets.setProgress(1);
+        avatarBullets.setStyle("-fx-accent: green;");
+
         setUpWalls();
 
         enemy1AI();
@@ -99,57 +104,47 @@ public class GameViewController implements Initializable {
     }
 
     public void draw() {
+        new Thread(() -> {
+            while (isRunning) {
+                Platform.runLater(() -> {
+                    gc.setFill(Color.BLACK);
+                    gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        new Thread(
-                () -> {
-                    while (isRunning) {
-                        Platform.runLater(() -> {
-                            gc.setFill(Color.BLACK);
-                            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+                    drawObstacles();
 
-                            drawObstacles();
+                    renderAvatar(avatar, avatarLife, avatarBullets);
+                    renderAvatar(enemy1, enemy1Life, null);
+                    renderAvatar(enemy2, enemy2Life, null);
+                    renderAvatar(enemy3, enemy3Life, null);
 
-                            renderAvatar(avatar, avatarLife);
-                            renderAvatar(enemy1, enemy1Life);
-                            renderAvatar(enemy2, enemy2Life);
-                            renderAvatar(enemy3, enemy3Life);
-
-                            int count = 0;
-                            for (Avatar avatar : avatars) {
-                                if(!avatar.isAlive) count++;
-                            }
-
-                            if(count == 3){
-                                isRunning = false;
-                                for (Avatar avatar : avatars)
-                                    if(avatar.isAlive)
-                                        Game.getInstance().winner(avatar);
-
-                                Game.getInstance().update();
-                            }
-
-                            doKeyboardActions();
-
-                            if(!isRunning){
-                                // Hacer una mejor implementacion para volver a jugar, de momento la deje asi
-                                HelloApplication.open("WelcomeView.fxml");
-                                Stage stage = (Stage) canvas.getScene().getWindow();
-                                stage.close();
-                            }
-
-                        });
-                        //Sleep
-                        try {
-                            Thread.sleep(20);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
+                    int count = 0;
+                    for (Avatar avatar : avatars) {
+                        if (!avatar.isAlive) count++;
                     }
 
+                    if (count == 3) {
+                        isRunning = false;
+                        for (Avatar avatar : avatars)
+                            if (avatar.isAlive)
+                                Game.getInstance().winner(avatar);
+
+                        Game.getInstance().update();
+                        HelloApplication.open("WelcomeView.fxml");
+                        Stage stage = (Stage) canvas.getScene().getWindow();
+                        stage.close();
+                    }
+
+                    doKeyboardActions();
+                });
+
+                // Sleep
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
-        ).start();
-
-
+            }
+        }).start();
     }
 
     private void doKeyboardActions() {
@@ -267,17 +262,26 @@ public class GameViewController implements Initializable {
         }
     }
 
-    private void renderAvatar(Avatar avatar, ProgressBar life){
-        if(avatar.isAlive){
+    private void renderAvatar(Avatar avatar, ProgressBar life, ProgressBar bullets) {
+        if (avatar.isAlive) {
             avatar.draw();
             avatar.manageBullets(avatars);
-            life.setProgress((double) avatar.getHearts() / 5.0);
-        }else
+            life.setProgress((double) avatar.getHearts() / 3.0);
+            if (bullets != null) {
+                bullets.setProgress((double) avatar.numBullets / GameViewController.RELOAD_FACTOR);
+            }
+        } else {
             life.setProgress(0);
+            if (bullets != null) {
+                bullets.setProgress(0);
+            }
+        }
     }
-
     public boolean detectCollisionRight(Avatar avatar){
 
+        if (avatar.pos.getX() + avatar.direction.x + 25 >= canvas.getWidth()) {
+            return true;
+        }
 
         for(int i = 0; i < obstacles.size(); i++){
 
@@ -289,6 +293,10 @@ public class GameViewController implements Initializable {
     }
 
     public boolean detectCollisionLeft(Avatar avatar){
+        if (avatar.pos.getX() - avatar.direction.x - 25 <= 0) {
+            return true;
+        }
+
         for(int i = 0; i < obstacles.size(); i++){
             if(obstacles.get(i).bounds.intersects(avatar.pos.x - avatar.direction.x - 25, avatar.pos.y - avatar.direction.y - 25, 50, 50))
                 return true;
@@ -297,6 +305,11 @@ public class GameViewController implements Initializable {
     }
 
     public boolean detectCollisionUp(Avatar avatar) {
+
+        if (avatar.pos.getY() - avatar.direction.y - 25 <= 0) {
+            return true;
+        }
+
         for (int i = 0; i < obstacles.size(); i++) {
             if (obstacles.get(i).bounds.intersects(avatar.pos.x - 25, avatar.pos.y - avatar.direction.y - 25, 50, 50))
                 return true;
@@ -305,6 +318,11 @@ public class GameViewController implements Initializable {
     }
 
     public boolean detectCollisionDown(Avatar avatar) {
+
+        if (avatar.pos.getY() + avatar.direction.y + 25 >= canvas.getHeight()) {
+            return true;
+        }
+
         for (int i = 0; i < obstacles.size(); i++) {
             if (obstacles.get(i).bounds.intersects(avatar.pos.x - 25, avatar.pos.y + avatar.direction.y - 25, 50, 50))
                 return true;
@@ -313,6 +331,13 @@ public class GameViewController implements Initializable {
     }
 
     public boolean detectCollisionForward(Avatar avatar){
+        double newX = avatar.pos.getX() + avatar.direction.x;
+        double newY = avatar.pos.getY() + avatar.direction.y;
+
+        if (newX + 25 >= canvas.getWidth() || newX - 25 <= 0 ||
+                newY + 25 >= canvas.getHeight() || newY - 25 <= 0) {
+            return true;
+        }
 
         for(int i = 0; i < obstacles.size(); i++){
 
@@ -327,6 +352,14 @@ public class GameViewController implements Initializable {
 
     public boolean detectCollisionBackward(Avatar avatar){
 
+        double newX = avatar.pos.getX() - avatar.direction.x;
+        double newY = avatar.pos.getY() - avatar.direction.y;
+
+        if (newX + 25 >= canvas.getWidth() || newX - 25 <= 0 ||
+                newY + 25 >= canvas.getHeight() || newY - 25 <= 0) {
+            return true;
+        }
+
         for(int i = 0; i < obstacles.size(); i++){
 
             if(obstacles.get(i).bounds.intersects(avatar.pos.x - avatar.direction.x - 25, avatar.pos.y - avatar.direction.y - 25, 50, 50))
@@ -339,130 +372,127 @@ public class GameViewController implements Initializable {
     }
 
 
-    private void enemy1AI(){
+    private void enemy1AI() {
+        new Thread(() -> {
+            while (enemy1.isAlive) {
+                if (!enemy1.hasBullets()) enemy1.reload();
 
-        new Thread(()->{
+                // (1-3)
+                int random = (int) (Math.random() * (3 - 1 + 1) + 1);
 
-            while (enemy1.isAlive){
-
-                if(!enemy1.hasBullets()) enemy1.reload();
-
-                //(1-3)
-                int random = (int)(Math.random()*(3-1+1)+1);
-
-                if(random == 1){
-                    for (int i = 0; i < 20; i++){
-                        if(!detectCollisionForward(enemy1))
+                if (random == 1) {
+                    for (int i = 0; i < 20; i++) {
+                        if (!detectCollisionForward(enemy1))
                             enemy1.moveForward();
                         else
                             enemy1.changeAngle(180);
                     }
                 }
 
-                if(random == 2){
+                if (random == 2) {
                     enemy1.changeAngle(-25);
-                    enemy1.shoot();
-                }
 
-                if(random == 3){
-                    enemy1.changeAngle(25);
-                    enemy1.shoot();
-                }
-
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-
-        }).start();
-
-    }
-
-    private void enemy2AI(){
-
-        new Thread(()->{
-
-            while (enemy2.isAlive){
-
-                if(!enemy2.hasBullets()) enemy2.reload();
-
-                //(1-3)
-                int random = (int)(Math.random()*(3-1+1)+1);
-
-                if(random == 1){
-                    for (int i = 0; i < 20; i++){
-                        if(!detectCollisionForward(enemy2))
-                            enemy2.moveForward();
-                        else
-                            enemy2.changeAngle(180);
+                    // Verificar si hay colisión con el jugador antes de disparar
+                    if (!detectCollisionForward(enemy1)) {
+                        enemy1.shoot();
                     }
                 }
 
-                if(random == 2){
+                if (random == 3) {
+                    enemy1.changeAngle(25);
+
+                    // Verificar si hay colisión con el jugador antes de disparar
+                    if (!detectCollisionForward(enemy1)) {
+                        enemy1.shoot();
+                    }
+                }
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+    }
+
+
+    private void enemy2AI() {
+        new Thread(() -> {
+            while (enemy2.isAlive) {
+                if (!enemy2.hasBullets()) {
+                    enemy2.reload();
+                }
+
+                //(1-3)
+                int random = (int) (Math.random() * (3 - 1 + 1) + 1);
+
+                if (random == 1) {
+                    for (int i = 0; i < 20; i++) {
+                        if (!detectCollisionForward(enemy2)) {
+                            enemy2.moveForward();
+                        } else {
+                            enemy2.changeAngle(180);
+                        }
+                    }
+                }
+
+                if (random == 2) {
                     enemy2.changeAngle(-25);
                     enemy2.shoot();
                 }
 
-                if(random == 3){
+                if (random == 3) {
                     enemy2.changeAngle(25);
                     enemy2.shoot();
                 }
 
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-
             }
-
         }).start();
-
     }
 
-    private void enemy3AI(){
-
-        new Thread(()->{
-
-            while (enemy3.isAlive){
-
-                if(!enemy3.hasBullets()) enemy3.reload();
+    private void enemy3AI() {
+        new Thread(() -> {
+            while (enemy3.isAlive) {
+                if (!enemy3.hasBullets()) {
+                    enemy3.reload();
+                }
 
                 //(1-3)
-                int random = (int)(Math.random()*(3-1+1)+1);
+                int random = (int) (Math.random() * (3 - 1 + 1) + 1);
 
-                if(random == 1){
-                    for (int i = 0; i < 20; i++){
-                        if(!detectCollisionForward(enemy3))
+                if (random == 1) {
+                    for (int i = 0; i < 20; i++) {
+                        if (!detectCollisionForward(enemy3)) {
                             enemy3.moveForward();
-                        else
+                        } else {
                             enemy3.changeAngle(180);
+                        }
                     }
                 }
 
-                if(random == 2){
+                if (random == 2) {
                     enemy3.changeAngle(-25);
                     enemy3.shoot();
                 }
 
-                if(random == 3){
+                if (random == 3) {
                     enemy3.changeAngle(25);
                     enemy3.shoot();
                 }
 
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-
             }
-
         }).start();
-
     }
 
     public void onReturnButton() {
