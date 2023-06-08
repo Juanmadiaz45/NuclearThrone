@@ -138,6 +138,12 @@ public class Avatar {
         numBullets--;
     }
 
+    public Vector getCenter() {
+        return new Vector(pos.x, pos.y);
+    }
+
+
+
     public void reload(){
         numBullets = GameViewController.RELOAD_FACTOR;
     }

@@ -33,4 +33,13 @@ public class Vector {
     public void setY(double y) {
         this.y = y;
     }
+
+    public void normalize() {
+        double magnitude = Math.sqrt(x * x + y * y);
+        if (magnitude != 0) {
+            x /= magnitude;
+            y /= magnitude;
+        }
+    }
+
 }

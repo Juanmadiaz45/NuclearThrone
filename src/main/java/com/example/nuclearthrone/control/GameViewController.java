@@ -10,6 +10,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import com.example.nuclearthrone.model.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -137,23 +138,20 @@ public class GameViewController implements Initializable {
     }
 
     private void doKeyboardActions() {
-        //falta las colisiones con las paredes!!!!
-
-        if(up  ){// &&!detectCollisionUp(avatar)
-            avatar.pos.setY(avatar.pos.getY()-3);
+        if (up && !detectCollisionUp(avatar) && avatar.pos.getY() - 3 >= 0) {
+            avatar.pos.setY(avatar.pos.getY() - 3);
         }
-        if (left && !detectCollisionLeft(avatar)) {
-            avatar.pos.setX(avatar.pos.getX()-3);
+        if (left && !detectCollisionLeft(avatar) && avatar.pos.getX() - 3 >= 0) {
+            avatar.pos.setX(avatar.pos.getX() - 3);
         }
-        if (down ) {// && !detectCollisionDown(avatar)
-            avatar.pos.setY(avatar.pos.getY()+3);
+        if (down && !detectCollisionDown(avatar) && avatar.pos.getY() + 3 <= canvas.getHeight()) {
+            avatar.pos.setY(avatar.pos.getY() + 3);
         }
-        if (right && !detectCollisionRight(avatar)) {
-            avatar.pos.setX(avatar.pos.getX()+3);
+        if (right && !detectCollisionRight(avatar) && avatar.pos.getX() + 3 <= canvas.getWidth()) {
+            avatar.pos.setX(avatar.pos.getX() + 3);
         }
-
-
     }
+
     public void onKeyReleased(KeyEvent event){
         switch (event.getCode()){
             case LEFT, A: left = false; break;
@@ -166,16 +164,24 @@ public class GameViewController implements Initializable {
         System.out.println(event.getCode());
         switch (event.getCode()) {
             case LEFT, A:
-                left = true;
+                if (avatar.pos.getX() - 3 >= 0) {
+                    left = true;
+                }
                 break;
             case UP, W:
-                up = true;
+                if (avatar.pos.getY() - 3 >= 0) {
+                    up = true;
+                }
                 break;
             case RIGHT, D:
-                right = true;
+                if (avatar.pos.getX() + 3 <= canvas.getWidth()) {
+                    right = true;
+                }
                 break;
             case DOWN, S:
-                down = true;
+                if (avatar.pos.getY() + 3 <= canvas.getHeight()) {
+                    down = true;
+                }
                 break;
             case R:
                 avatar.reload();
@@ -185,7 +191,6 @@ public class GameViewController implements Initializable {
                 break;
         }
     }
-
 
     private void setUpWalls(){
 
@@ -275,7 +280,21 @@ public class GameViewController implements Initializable {
         return false;
     }
 
+    public boolean detectCollisionUp(Avatar avatar) {
+        for (int i = 0; i < obstacles.size(); i++) {
+            if (obstacles.get(i).bounds.intersects(avatar.pos.x - 25, avatar.pos.y - avatar.direction.y - 25, 50, 50))
+                return true;
+        }
+        return false;
+    }
 
+    public boolean detectCollisionDown(Avatar avatar) {
+        for (int i = 0; i < obstacles.size(); i++) {
+            if (obstacles.get(i).bounds.intersects(avatar.pos.x - 25, avatar.pos.y + avatar.direction.y - 25, 50, 50))
+                return true;
+        }
+        return false;
+    }
 
 
 //    private void enemyAI(){
