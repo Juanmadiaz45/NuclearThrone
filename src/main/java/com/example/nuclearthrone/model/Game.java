@@ -6,7 +6,6 @@ import java.util.*;
 
 public class Game {
     private static Game instance = new Game();
-    public final String DATABASE_PATH = "db/score.txt";
     private String player;
 
     private List<Avatar> avatars;

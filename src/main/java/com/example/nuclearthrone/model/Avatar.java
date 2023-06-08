@@ -71,19 +71,21 @@ public class Avatar {
     public void moveAvatar(){
 
     }
-//    public void moveForward(){
-//
-//        if((pos.x + direction.x > factor && pos.x + direction.x < canvas.getWidth() - factor) &&
-//                (pos.y + direction.y > factor && pos.y + direction.y < canvas.getHeight() - factor)){
-//
-//            pos.x += direction.x;
-//            pos.y += direction.y;
-//
-//        } else if (name.equals("CPU")) {
-//            changeAngle(180);
-//        }
-//
-//    }
+    public void moveForward(){
+
+        int factor = 20;
+
+        if((pos.x + direction.x > factor && pos.x + direction.x < canvas.getWidth() - factor) &&
+                (pos.y + direction.y > factor && pos.y + direction.y < canvas.getHeight() - factor)){
+
+            pos.x += direction.x;
+            pos.y += direction.y;
+
+        } else if (name.equals("CPU")) {
+            changeAngle(180);
+        }
+
+    }
 
     public void moveBackward() {
 
