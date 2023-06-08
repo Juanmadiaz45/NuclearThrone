@@ -2,26 +2,43 @@ package com.example.nuclearthrone.model;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import java.util.*;
 
 public class Game {
-    private Canvas canvas;
-    private Avatar avatar;
+    private static Game instance = new Game();
+    public final String DATABASE_PATH = "db/score.txt";
+    private String player;
 
-    public Game() {
-        // initialize
-        canvas = new Canvas(800, 600);
-        avatar = new Avatar(canvas, new Vector(400, 300));
+    private List<Avatar> avatars;
 
-        // add event for shooting
-        canvas.setOnMouseClicked(event -> {
-            double mouseX = event.getX();
-            double mouseY = event.getY();
+    private Game(){};
 
-            Vector playerPosition = avatar.getPosition();
-            Vector direction = new Vector(mouseX - playerPosition.getX(), mouseY - playerPosition.getY());
-            direction.normalize();
-
-            avatar.shoot(direction);
-        });
+    public static Game getInstance(){
+        return instance;
     }
+
+    public String getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(String player) {
+        this.player = player;
+    }
+
+    public List<Avatar> getAvatars() {
+        return avatars;
+    }
+
+    public void setAvatars(List<Avatar> avatars) {
+        this.avatars = avatars;
+    }
+
+    public void winner (Avatar avatar) {
+
+    }
+
+    public void update() {
+
+    }
+
 }
