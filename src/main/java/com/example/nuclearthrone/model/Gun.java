@@ -1,7 +1,9 @@
 package com.example.nuclearthrone.model;
 
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.shape.Rectangle;
 
 import java.util.Random;
 
@@ -9,9 +11,16 @@ public class Gun {
     private double x;
     private double y;
     private Image sprite;
+    private Canvas canvas;
+    public Vector pos;
+    private GraphicsContext gc;
+    public Rectangle bounds;
 
-    public Gun(double x, double y, String spritePath) {
-
+    public Gun(double x, double y, String spritePath, Canvas canvas, Vector pos ) {
+        canvas = this.canvas;
+        gc.getCanvas().getGraphicsContext2D();
+        pos = this.pos;
+        bounds = new Rectangle(pos.x, pos.y, 25, 25);
         this.sprite = new Image(spritePath);
         randomizePosition(x,y);
     }

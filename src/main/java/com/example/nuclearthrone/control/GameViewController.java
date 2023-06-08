@@ -1,10 +1,7 @@
 package com.example.nuclearthrone.control;
 
 import com.example.nuclearthrone.HelloApplication;
-import com.example.nuclearthrone.model.Avatar;
-import com.example.nuclearthrone.model.Game;
-import com.example.nuclearthrone.model.Obstacle;
-import com.example.nuclearthrone.model.Vector;
+import com.example.nuclearthrone.model.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -46,6 +43,10 @@ public class GameViewController implements Initializable {
     private Image enemy3Img;
     private List<Avatar> avatars;
     private List<Obstacle> obstacles;
+    private List<Gun> gunsInFloor;
+    private Gun gun1;
+    private Gun gun2;
+    private Gun gun3;
     private boolean up = false;
     private boolean left = false;
     private boolean down = false;
@@ -56,6 +57,7 @@ public class GameViewController implements Initializable {
     public GameViewController() {
         avatars = new ArrayList<>();
         obstacles = new ArrayList<>();
+        gunsInFloor = new ArrayList<>();
     }
 
     @Override
@@ -64,6 +66,16 @@ public class GameViewController implements Initializable {
         canvas.setFocusTraversable(true);
         canvas.setOnKeyPressed(this::onKeyPressed);
         canvas.setOnKeyReleased(this::onKeyReleased);
+
+        String weaponPath1 = "revolver1.png";
+        String weaponPath2 = "weirdRevolver.png";
+        String weaponPath3 = "glock.png";
+
+        gun1 = new Gun(0,0, weaponPath1, canvas, new Vector(canvas.getWidth()-25, canvas.getHeight()-25));
+        gun2 = new Gun(0,0,weaponPath2, canvas, new Vector(25, 25));
+        gun3 = new Gun(0,0, weaponPath3, canvas,new Vector(25, -25));
+        gunsInFloor.add(gun1);
+        Game.getInstance().setGunsOnFloor(gunsInFloor);
 
         Image avatarImg = new Image("file:" + HelloApplication.class.getResource("Rebel1.png").getPath());
         avatar = new Avatar(Game.getInstance().getPlayer(), canvas, avatarImg, Color.YELLOW, new Vector(50, 50), new Vector(2, 2));
@@ -260,6 +272,12 @@ public class GameViewController implements Initializable {
         for(int i = 0; i < obstacles.size(); i++){
             obstacles.get(i).draw();
         }
+    }
+
+    private void renderGun(Gun gun){
+
+
+
     }
 
     private void renderAvatar(Avatar avatar, ProgressBar life, ProgressBar bullets) {
@@ -500,4 +518,11 @@ public class GameViewController implements Initializable {
         HelloApplication.showWindow("MenuView");
     }
 
+    public List<Gun> getGunsInFloor() {
+        return gunsInFloor;
+    }
+
+    public void setGunsInFloor(List<Gun> gunsInFloor) {
+        this.gunsInFloor = gunsInFloor;
+    }
 }
