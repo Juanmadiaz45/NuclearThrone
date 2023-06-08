@@ -56,4 +56,5 @@ public class MenuViewController implements Initializable {
         HelloApplication.showWindow("GameView");
 
     }
+
 }
