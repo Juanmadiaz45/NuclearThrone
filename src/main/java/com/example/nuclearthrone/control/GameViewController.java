@@ -160,18 +160,28 @@ public class GameViewController implements Initializable {
     }
 
     private void doKeyboardActions() {
-        if (up && !detectCollisionUp(avatar) && avatar.pos.getY() - 3 >= 0) {
+        //mover avatar
+        if (up && avatar.pos.getY() - 15 > 0 && !detectCollisionUp(avatar)) {
             avatar.pos.setY(avatar.pos.getY() - 3);
         }
-        if (left && !detectCollisionLeft(avatar) && avatar.pos.getX() - 3 >= 0) {
+        if (left && avatar.pos.getX() - 20 > 0 && !detectCollisionLeft(avatar)) {
             avatar.pos.setX(avatar.pos.getX() - 3);
         }
-        if (down && !detectCollisionDown(avatar) && avatar.pos.getY() + 3 <= canvas.getHeight()) {
+        if (down && avatar.pos.getY() + 20 <= canvas.getHeight() && !detectCollisionDown(avatar)) {
             avatar.pos.setY(avatar.pos.getY() + 3);
         }
-        if (right && !detectCollisionRight(avatar) && avatar.pos.getX() + 3 <= canvas.getWidth()) {
+        if (right && avatar.pos.getX() + 20 < canvas.getWidth() && !detectCollisionRight(avatar)) {
             avatar.pos.setX(avatar.pos.getX() + 3);
         }
+    }
+    private boolean collision(Avatar avatar){
+        for(int i = 0; i < obstacles.size(); i++) {
+            if (obstacles.get(i).bounds.intersects(avatar.bounds.getX()+1,avatar.bounds.getY()+1,40,40)) {
+                System.out.println("collision!!!");
+                return true;
+            }
+        } return false;
+
     }
 
     public void onKeyReleased(KeyEvent event){
@@ -187,22 +197,22 @@ public class GameViewController implements Initializable {
         System.out.println(event.getCode());
         switch (event.getCode()) {
             case LEFT, A:
-                if (avatar.pos.getX() - 3 >= 0) {
+                if (avatar.pos.getX() - 3 > 0) {
                     left = true;
                 }
                 break;
             case UP, W:
-                if (avatar.pos.getY() - 3 >= 0) {
+                if (avatar.pos.getY() - 3 > 0) {
                     up = true;
                 }
                 break;
             case RIGHT, D:
-                if (avatar.pos.getX() + 3 <= canvas.getWidth()) {
+                if (avatar.pos.getX() + 3 < canvas.getWidth()) {
                     right = true;
                 }
                 break;
             case DOWN, S:
-                if (avatar.pos.getY() + 3 <= canvas.getHeight()) {
+                if (avatar.pos.getY() + 3 < canvas.getHeight()) {
                     down = true;
                 }
                 break;
@@ -297,53 +307,45 @@ public class GameViewController implements Initializable {
     }
     public boolean detectCollisionRight(Avatar avatar){
 
-        if (avatar.pos.getX() + avatar.direction.x + 25 >= canvas.getWidth()) {
-            return true;
-        }
-
         for(int i = 0; i < obstacles.size(); i++){
-
-            if( obstacles.get(i).bounds.intersects(
-                    avatar.pos.x + avatar.direction.x - 25, avatar.pos.y + avatar.direction.y - 25, 50, 50))
+            if (obstacles.get(i).bounds.intersects(avatar.bounds.getX()+3,avatar.bounds.getY(), 40, 40)) {
+                System.out.println("collision r");
                 return true;
+            }
         }
         return false;
     }
 
     public boolean detectCollisionLeft(Avatar avatar){
-        if (avatar.pos.getX() - avatar.direction.x - 25 <= 0) {
-            return true;
-        }
 
         for(int i = 0; i < obstacles.size(); i++){
-            if(obstacles.get(i).bounds.intersects(avatar.pos.x - avatar.direction.x - 25, avatar.pos.y - avatar.direction.y - 25, 50, 50))
+            if (obstacles.get(i).bounds.intersects(avatar.bounds.getX()-3,avatar.bounds.getY(), 40, 40)) {
+                System.out.println("collision l");
                 return true;
+            }
         }
         return false;
     }
 
     public boolean detectCollisionUp(Avatar avatar) {
 
-        if (avatar.pos.getY() - avatar.direction.y - 25 <= 0) {
-            return true;
-        }
-
         for (int i = 0; i < obstacles.size(); i++) {
-            if (obstacles.get(i).bounds.intersects(avatar.pos.x - 25, avatar.pos.y - avatar.direction.y - 25, 50, 50))
+            //if (obstacles.get(i).bounds.intersects(avatar.pos.x - 20, avatar.pos.y -3- avatar.direction.y - 20, 50, 50)) {
+            if (obstacles.get(i).bounds.intersects(avatar.bounds.getX(),avatar.bounds.getY()-3, 40, 40)) {
+                System.out.println("collision up");
                 return true;
+            }
         }
         return false;
     }
 
     public boolean detectCollisionDown(Avatar avatar) {
 
-        if (avatar.pos.getY() + avatar.direction.y + 25 >= canvas.getHeight()) {
-            return true;
-        }
-
         for (int i = 0; i < obstacles.size(); i++) {
-            if (obstacles.get(i).bounds.intersects(avatar.pos.x - 25, avatar.pos.y + avatar.direction.y - 25, 50, 50))
+            if (obstacles.get(i).bounds.intersects(avatar.bounds.getX(),avatar.bounds.getY()+3, 40, 40)) {
+                System.out.println("collision d");
                 return true;
+            }
         }
         return false;
     }

@@ -36,7 +36,7 @@ public class Avatar {
         this.color = color;
         this.pos = pos;
         this.direction = direction;
-        bounds = new Rectangle(pos.x, pos.y, 50, 50);
+        bounds = new Rectangle(pos.x, pos.y, 40, 40);
         bullets = new ArrayList<>();
         hearts = 3;
         isAlive = true;
@@ -45,12 +45,13 @@ public class Avatar {
     public void draw(){
         gc.save();
         gc.translate(pos.x, pos.y);
-        gc.rotate(90+direction.getAngle());
+        //gc.rotate(90+direction.getAngle());
+        bounds.setX(pos.x-20);
+        bounds.setY(pos.y-20);
 
-        bounds.setX(pos.x-25);
-        bounds.setY(pos.y-25);
-
-        gc.drawImage(img, -25,-25, 50,50);
+        gc.setFill(color.GREEN);
+        gc.fillRect(-20,-20, 40,40);
+        gc.drawImage(img, -20,-25, 50,50);
         gc.restore();
     }
 
