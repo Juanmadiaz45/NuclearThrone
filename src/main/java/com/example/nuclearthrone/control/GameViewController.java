@@ -1,6 +1,10 @@
 package com.example.nuclearthrone.control;
 
 import com.example.nuclearthrone.HelloApplication;
+import com.example.nuclearthrone.model.Avatar;
+import com.example.nuclearthrone.model.Game;
+import com.example.nuclearthrone.model.Obstacle;
+import com.example.nuclearthrone.model.Vector;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,8 +13,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
-import com.example.nuclearthrone.model.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -34,25 +36,22 @@ public class GameViewController implements Initializable {
     private ProgressBar enemy2Life;
     @FXML
     private ProgressBar enemy3Life;
-
     private Avatar enemy1;
     private Image enemy1Img;
     private Avatar enemy2;
     private Image enemy2Img;
     private Avatar enemy3;
-    private Image enemy1Im3;
-
+    private Image enemy3Img;
     private List<Avatar> avatars;
     private List<Obstacle> obstacles;
-
-    boolean up = false;
-    boolean left = false;
-    boolean down = false;
-    boolean right = false;
+    private boolean up = false;
+    private boolean left = false;
+    private boolean down = false;
+    private boolean right = false;
 
     public static final int RELOAD_FACTOR = 10;
 
-    public GameViewController(){
+    public GameViewController() {
         avatars = new ArrayList<>();
         obstacles = new ArrayList<>();
     }
@@ -64,23 +63,38 @@ public class GameViewController implements Initializable {
         canvas.setOnKeyPressed(this::onKeyPressed);
         canvas.setOnKeyReleased(this::onKeyReleased);
 
-        Image avatarImg = new Image ("file:"+ HelloApplication.class.getResource("RebelWalk1.png").getPath());
+        Image avatarImg = new Image("file:" + HelloApplication.class.getResource("Rebel1.png").getPath());
         avatar = new Avatar(Game.getInstance().getPlayer(), canvas, avatarImg, Color.YELLOW, new Vector(50, 50), new Vector(2, 2));
+
+        Image enemy1Img = new Image("file:" + HelloApplication.class.getResource("Enemy1.gif").getPath());
+        enemy1 = new Avatar("Enemy1", canvas, enemy1Img, Color.BLUE, new Vector(canvas.getWidth() - 50, canvas.getHeight() - 50), new Vector(-2, -2));
+
+        Image enemy2Img = new Image("file:" + HelloApplication.class.getResource("Enemy2.gif").getPath());
+        enemy2 = new Avatar("Enemy2", canvas, enemy2Img, Color.RED, new Vector(canvas.getWidth() - 50, canvas.getHeight() - 50), new Vector(-2, -2));
+
+        Image enemy3Img = new Image("file:" + HelloApplication.class.getResource("Enemy3.gif").getPath());
+        enemy3 = new Avatar("Enemy3", canvas, enemy3Img, Color.PURPLE, new Vector(50, canvas.getHeight() - 100), new Vector(2, -2));
+
         avatars.add(avatar);
+        avatars.add(enemy1);
+        avatars.add(enemy2);
 
         Game.getInstance().setAvatars(avatars);
 
         avatarLife.setProgress(1);
-//        enemy1Life.setProgress(1);
-//        enemy2Life.setProgress(1);
-//        enemy3Life.setProgress(1);
+        enemy1Life.setProgress(1);
+        enemy2Life.setProgress(1);
+        enemy3Life.setProgress(1);
 
         setUpWalls();
 
-        //enemyAI();
+        enemy1AI();
+
+        enemy2AI();
+
+        enemy3AI();
 
         draw();
-
     }
 
     public void draw() {
@@ -95,9 +109,9 @@ public class GameViewController implements Initializable {
                             drawObstacles();
 
                             renderAvatar(avatar, avatarLife);
-//                            renderAvatar(enemy1, enemy1Life);
-//                            renderAvatar(enemy2, enemy2Life);
-//                            renderAvatar(enemy3, enemy3Life);
+                            renderAvatar(enemy1, enemy1Life);
+                            renderAvatar(enemy2, enemy2Life);
+                            renderAvatar(enemy3, enemy3Life);
 
                             int count = 0;
                             for (Avatar avatar : avatars) {
@@ -160,6 +174,7 @@ public class GameViewController implements Initializable {
             case DOWN, S: down = false; break;
         }
     }
+
     public void onKeyPressed(KeyEvent event) {
         System.out.println(event.getCode());
         switch (event.getCode()) {
@@ -296,48 +311,158 @@ public class GameViewController implements Initializable {
         return false;
     }
 
+    public boolean detectCollisionForward(Avatar avatar){
 
-//    private void enemyAI(){
-//
-//        new Thread(()->{
-//
-//            while (enemy1.isAlive){
-//
-//                if(!enemy1.hasBullets()) enemy1.reload();
-//
-//                //(1-3)
-//                int random = (int)(Math.random()*(3-1+1)+1);
-//
-//                if(random == 1){
-//                    for (int i = 0; i < 20; i++){
-//                        if(!detectCollisionForward(enemy1))
-//                            //enemy1.moveForward();
-//                        else
-//                            enemy1.changeAngle(180);
-//                    }
-//                }
-//
-//                if(random == 2){
-//                    enemy1.changeAngle(-25);
-//                    enemy1.shoot();
-//                }
-//
-//                if(random == 3){
-//                    enemy1.changeAngle(25);
-//                    enemy1.shoot();
-//                }
-//
-//                try {
-//                    Thread.sleep(500);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//
-//            }
-//
-//        }).start();
-//
-//    }
+        for(int i = 0; i < obstacles.size(); i++){
+
+            if(obstacles.get(i).bounds.intersects(avatar.pos.x + avatar.direction.x - 25, avatar.pos.y + avatar.direction.y - 25, 50, 50))
+                return true;
+
+        }
+
+        return false;
+
+    }
+
+    public boolean detectCollisionBackward(Avatar avatar){
+
+        for(int i = 0; i < obstacles.size(); i++){
+
+            if(obstacles.get(i).bounds.intersects(avatar.pos.x - avatar.direction.x - 25, avatar.pos.y - avatar.direction.y - 25, 50, 50))
+                return true;
+
+        }
+
+        return false;
+
+    }
+
+
+    private void enemy1AI(){
+
+        new Thread(()->{
+
+            while (enemy1.isAlive){
+
+                if(!enemy1.hasBullets()) enemy1.reload();
+
+                //(1-3)
+                int random = (int)(Math.random()*(3-1+1)+1);
+
+                if(random == 1){
+                    for (int i = 0; i < 20; i++){
+                        if(!detectCollisionForward(enemy1))
+                            enemy1.moveForward();
+                        else
+                            enemy1.changeAngle(180);
+                    }
+                }
+
+                if(random == 2){
+                    enemy1.changeAngle(-25);
+                    enemy1.shoot();
+                }
+
+                if(random == 3){
+                    enemy1.changeAngle(25);
+                    enemy1.shoot();
+                }
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+
+        }).start();
+
+    }
+
+    private void enemy2AI(){
+
+        new Thread(()->{
+
+            while (enemy2.isAlive){
+
+                if(!enemy2.hasBullets()) enemy2.reload();
+
+                //(1-3)
+                int random = (int)(Math.random()*(3-1+1)+1);
+
+                if(random == 1){
+                    for (int i = 0; i < 20; i++){
+                        if(!detectCollisionForward(enemy2))
+                            enemy2.moveForward();
+                        else
+                            enemy2.changeAngle(180);
+                    }
+                }
+
+                if(random == 2){
+                    enemy2.changeAngle(-25);
+                    enemy2.shoot();
+                }
+
+                if(random == 3){
+                    enemy2.changeAngle(25);
+                    enemy2.shoot();
+                }
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+
+        }).start();
+
+    }
+
+    private void enemy3AI(){
+
+        new Thread(()->{
+
+            while (enemy3.isAlive){
+
+                if(!enemy3.hasBullets()) enemy3.reload();
+
+                //(1-3)
+                int random = (int)(Math.random()*(3-1+1)+1);
+
+                if(random == 1){
+                    for (int i = 0; i < 20; i++){
+                        if(!detectCollisionForward(enemy3))
+                            enemy3.moveForward();
+                        else
+                            enemy3.changeAngle(180);
+                    }
+                }
+
+                if(random == 2){
+                    enemy3.changeAngle(-25);
+                    enemy3.shoot();
+                }
+
+                if(random == 3){
+                    enemy3.changeAngle(25);
+                    enemy3.shoot();
+                }
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+
+        }).start();
+
+    }
 
     public void onReturnButton() {
         HelloApplication.hideWindow((Stage) canvas.getScene().getWindow());
