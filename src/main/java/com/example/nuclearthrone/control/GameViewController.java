@@ -78,6 +78,7 @@ public class GameViewController implements Initializable {
         avatars.add(avatar);
         avatars.add(enemy1);
         avatars.add(enemy2);
+        avatars.add(enemy3);
 
         Game.getInstance().setAvatars(avatars);
 
