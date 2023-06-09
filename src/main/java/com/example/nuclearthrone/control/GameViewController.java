@@ -38,12 +38,7 @@ public class GameViewController implements Initializable {
 
     @FXML
     private VBox progressBarContainer;
-//    @FXML
-//    private ProgressBar enemy1Life;
-//    @FXML
-//    private ProgressBar enemy2Life;
-//    @FXML
-//    private ProgressBar enemy3Life;
+
     @FXML
     private ProgressBar avatarBullets;
     private List<ProgressBar> progressBars; // List to store the ProgressBar elements
@@ -51,6 +46,10 @@ public class GameViewController implements Initializable {
 
     private List<Avatar> avatars;
     private List<Obstacle> obstacles;
+    private List<Gun> gunsInFloor;
+    private Gun gun1;
+    private Gun gun2;
+    private Gun gun3;
     private boolean up = false;
     private boolean left = false;
     private boolean down = false;
@@ -75,6 +74,8 @@ public class GameViewController implements Initializable {
         actualMap=0;
         level=1;
         progressBars = new ArrayList<>();
+        obstacles = new ArrayList<>();
+        gunsInFloor = new ArrayList<>();
     }
 
     @Override
@@ -87,6 +88,15 @@ public class GameViewController implements Initializable {
         Image avatarImg = new Image("file:" + HelloApplication.class.getResource("RebelWalk1.png").getPath());
         avatar = new Avatar(Game.getInstance().getPlayer(), canvas, avatarImg, Color.YELLOW, new Vector(50, 50), new Vector(1, 1));
         avatars.add(avatar);
+        String weaponPath1 = "revolver1.png";
+        String weaponPath2 = "weirdRevolver.png";
+        String weaponPath3 = "glock.png";
+        gun1 = new Gun(0,0, weaponPath1, canvas, new Vector(canvas.getWidth()-25, canvas.getHeight()-25));
+        gun2 = new Gun(0,0,weaponPath2, canvas, new Vector(25, 25));
+        gun3 = new Gun(0,0, weaponPath3, canvas,new Vector(25, -25));
+        gunsInFloor.add(gun1);
+        Game.getInstance().setGunsOnFloor(gunsInFloor);
+
 
         createMap1();
         createMap2();
@@ -370,7 +380,11 @@ public class GameViewController implements Initializable {
             obstacles.get(i).draw();
         }
     }
+    private void renderGun(Gun gun){
 
+
+
+    }
     private boolean renderAvatar(Avatar avatar, ProgressBar life, ProgressBar bullets) {
         //retorna false si esta muerto
         //Si muere el jugador principal (El que no tenga color rojo)
@@ -507,4 +521,11 @@ public class GameViewController implements Initializable {
         HelloApplication.showWindow("MenuView");
     }
 
+    public List<Gun> getGunsInFloor() {
+        return gunsInFloor;
+    }
+
+    public void setGunsInFloor(List<Gun> gunsInFloor) {
+        this.gunsInFloor = gunsInFloor;
+    }
 }

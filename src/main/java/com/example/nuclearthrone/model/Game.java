@@ -10,6 +10,8 @@ public class Game {
 
     private List<Avatar> avatars;
 
+    private List<Gun> gunsOnFloor;
+
     private Game(){};
 
     public static Game getInstance(){
@@ -40,4 +42,11 @@ public class Game {
 
     }
 
+    public List<Gun> getGunsOnFloor() {
+        return gunsOnFloor;
+    }
+
+    public void setGunsOnFloor(List<Gun> gunsOnFloor) {
+        this.gunsOnFloor = gunsOnFloor;
+    }
 }
