@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -92,6 +93,8 @@ public class GameViewController implements Initializable {
         canvas.setFocusTraversable(true);
         canvas.setOnKeyPressed(this::onKeyPressed);
         canvas.setOnKeyReleased(this::onKeyReleased);
+        canvas.setOnMousePressed(this::onMousePressed);
+        canvas.setOnMouseMoved(this::onMouseMoved);
 
         Image avatarImg = new Image("file:" + HelloApplication.class.getResource("RebelWalk1.png").getPath());
         avatar = new Avatar(Game.getInstance().getPlayer(), canvas, avatarImg, Color.YELLOW, new Vector(50, 50), new Vector(1, 1));
@@ -126,6 +129,27 @@ public class GameViewController implements Initializable {
         System.out.println(gun3Image.getUrl());
 
         System.out.println("Numero de armas en el suelo: " + gunsInFloor.size());
+    }
+
+    private void onMouseMoved(MouseEvent e) {
+
+        double x=e.getX();
+        double y=e.getY();
+
+    }
+
+    private void onMousePressed(MouseEvent e) {
+        System.out.println("X: " +e.getX() + "Y: "+e.getY());
+
+        double diffX = e.getX() - avatar.pos.getX();
+        double diffY = e.getY() - avatar.pos.getY();
+        Vector diff = new Vector(diffX, diffY);
+        diff.normalize();
+
+
+
+
+
     }
 
     private void createRandomEnemies(int enemyRange) {
