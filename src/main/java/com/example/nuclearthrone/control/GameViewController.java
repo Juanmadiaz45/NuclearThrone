@@ -14,6 +14,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -95,6 +96,8 @@ public class GameViewController implements Initializable {
         canvas.setOnKeyReleased(this::onKeyReleased);
         canvas.setOnMousePressed(this::onMousePressed);
         canvas.setOnMouseMoved(this::onMouseMoved);
+        //canvas.toFront();
+
 
         Image avatarImg = new Image("file:" + HelloApplication.class.getResource("RebelWalk1.png").getPath());
         avatar = new Avatar(Game.getInstance().getPlayer(), canvas, avatarImg, Color.YELLOW, new Vector(50, 50), new Vector(1, 1));
@@ -130,14 +133,19 @@ public class GameViewController implements Initializable {
 
         System.out.println("Numero de armas en el suelo: " + gunsInFloor.size());
     }
-
+    @FXML
+    StackPane stackPane;
     private void onMouseMoved(MouseEvent e) {
-
-        double x=e.getX();
-        double y=e.getY();
-
+        double x = e.getX();
+        double y = e.getY();
+        System.out.println("Mouse Movement");
+        gc.setStroke(avatar.color);
+        gc.setLineWidth(1.0);
+        double crossSize = 10.0;
+        gc.strokeLine(x - crossSize, y, x + crossSize, y);
+        gc.strokeLine(x, y - crossSize, x, y + crossSize);
     }
-
+    @FXML
     private void onMousePressed(MouseEvent e) {
         System.out.println("X: " +e.getX() + "Y: "+e.getY());
 
@@ -147,14 +155,11 @@ public class GameViewController implements Initializable {
         diff.normalize();
 
 
-
-
-
     }
 
     private void createRandomEnemies(int enemyRange) {
         System.out.println("nivel "+level);
-        numOfEnemies = level+random.nextInt((3)+2);
+        numOfEnemies = level+random.nextInt((3)+1);
         System.out.println(numOfEnemies);
         progressBarContainer.getChildren().removeAll();
 
@@ -179,8 +184,8 @@ public class GameViewController implements Initializable {
     }
     private Vector generateRandomPosition(){
 
-        int x = random.nextInt(((int)canvas.getWidth()-40)+25);
-        int y = random.nextInt(((int)canvas.getHeight()-40)+25);
+        int x = random.nextInt(((int)canvas.getWidth()-50)+25);
+        int y = random.nextInt(((int)canvas.getHeight()-50)+25);
         if(!checkColission(x,y)) return new Vector(x,y);
         return generateRandomPosition();
     }
