@@ -15,6 +15,7 @@ public class Obstacle {
     private Image img;
     public int WIDTH = 40;
     public int HEIGHT = 40;
+    private int hitCount;
 
     public Obstacle(Canvas canvas, double x, double y){
         this.canvas = canvas;
@@ -23,6 +24,8 @@ public class Obstacle {
         bounds = new Rectangle(x, y, WIDTH, HEIGHT);
         img = new Image("file:"+ HelloApplication.class.getResource("wall.png").getPath());
         bounds.setFill(new ImagePattern(img));
+
+        hitCount = 0;
 
     }
     public Obstacle(Canvas canvas, double x, double y, String imgString){
@@ -40,4 +43,21 @@ public class Obstacle {
         gc.drawImage(img, bounds.getX(), bounds.getY(), HEIGHT, WIDTH);
 
     }
+
+    public int getHitCount(){
+        return hitCount;
+    }
+
+    public void incrementHitCount() {
+        hitCount++;
+    }
+
+    public boolean shouldBeRemoved() {
+        return hitCount >= 4;
+    }
+
+    public void render() {
+        gc.drawImage(img, bounds.getX(), bounds.getY(), WIDTH, HEIGHT);
+    }
+
 }

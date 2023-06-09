@@ -341,6 +341,17 @@ public class GameViewController implements Initializable {
     }
 
     private boolean checkCollisionShot(Vector shotPosition) {
+
+        for (Obstacle obstacle : obstacles) {
+            if (obstacle.bounds.contains(shotPosition.getX(), shotPosition.getY())) {
+                obstacle.incrementHitCount();
+                if (obstacle.getHitCount() >= 4) {
+                    obstacles.remove(obstacle);
+                }
+                return true;
+            }
+        }
+
         for (Obstacle obstacle : obstacles) {
             if (obstacle.bounds.contains(shotPosition.getX(), shotPosition.getY())) {
                 return true; // Hay colisión con un obstáculo
@@ -477,11 +488,14 @@ public class GameViewController implements Initializable {
         map3.add(new Obstacle(canvas, 680, 580));
     }
 
-    private void drawObstacles(){
-        for(int i = 0; i < obstacles.size(); i++){
-            obstacles.get(i).draw();
+    private void drawObstacles() {
+        for (Obstacle obstacle : obstacles) {
+            if (obstacle.getHitCount() < 4) {
+                obstacle.render();
+            }
         }
     }
+
 
 
     private void renderGun(Gun gun){
