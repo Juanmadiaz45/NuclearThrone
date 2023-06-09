@@ -81,7 +81,6 @@ public class GameViewController implements Initializable {
         instance = this;
         avatars = new ArrayList<>();
         score=0;
-        actualMap=0;
         level=1;
         actualMap=1;
         deadenemies = 0;
@@ -159,7 +158,7 @@ public class GameViewController implements Initializable {
     private void createRandomEnemies(int enemyRange) {
 
         System.out.println("nivel "+level);
-        numOfEnemies = level+random.nextInt((3)+1);
+        numOfEnemies = random.nextInt((3)+enemyRange);
         System.out.println(numOfEnemies);
         progressBarContainer.getChildren().removeAll();
         gunsInFloor.add(gun1);
@@ -282,6 +281,8 @@ public class GameViewController implements Initializable {
                 }
             }
             gameFinished();
+            //endGame();
+
         }).start();
     }
 
@@ -344,17 +345,15 @@ public class GameViewController implements Initializable {
     }
 
     private boolean checkCollisionShot(Vector shotPosition) {
-
-        for (Obstacle obstacle : obstacles) {
-            if (obstacle.bounds.contains(shotPosition.getX(), shotPosition.getY())) {
-                obstacle.incrementHitCount();
-                if (obstacle.getHitCount() >= 4) {
-                    obstacles.remove(obstacle);
+        for (int i = 1; i < obstacles.size(); i++) {
+            if (obstacles.get(i).bounds.contains(shotPosition.getX(), shotPosition.getY())) {
+                obstacles.get(i).incrementHitCount();
+                if (obstacles.get(i).getHitCount() >= 4) {
+                    obstacles.remove(i);
                 }
                 return true;
             }
         }
-
         for (Obstacle obstacle : obstacles) {
             if (obstacle.bounds.contains(shotPosition.getX(), shotPosition.getY())) {
                 return true; // Hay colisión con un obstáculo
@@ -658,6 +657,7 @@ public class GameViewController implements Initializable {
     }
 
     public void gameFinished(){
+        stackPane.setOnMouseMoved(null);
         if(avatar.isAlive){
             String msg = " WINNER";
             AtomicReference<String> message = new AtomicReference<>(msg);
@@ -679,11 +679,8 @@ public class GameViewController implements Initializable {
             gc.setFont(font);
             gc.fillText(message + "\n\nPuntaje final: " + score, canvas.getWidth() / 2, canvas.getHeight() / 2);
 
-
         }
-
     }
-
     @FXML
     public void onEndGameButton() {
         isRunning = false;
