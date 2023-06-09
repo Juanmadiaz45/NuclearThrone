@@ -4,6 +4,7 @@ import com.example.nuclearthrone.HelloApplication;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
@@ -27,7 +28,7 @@ public class Obstacle {
     public Obstacle(Canvas canvas, double x, double y, String imgString){
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
-        bounds = new Rectangle(x, y, WIDTH, HEIGHT);
+        bounds = new Rectangle(x, y, 50, 50);
         img = new Image("file:"+ HelloApplication.class.getResource(imgString).getPath());
         bounds.setFill(new ImagePattern(img));
         System.out.println("PortalCreado");
@@ -37,5 +38,6 @@ public class Obstacle {
 
     public void draw(){
         gc.drawImage(img, bounds.getX(), bounds.getY(), HEIGHT, WIDTH);
+
     }
 }

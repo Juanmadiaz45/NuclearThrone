@@ -76,6 +76,7 @@ public class GameViewController implements Initializable {
         score=0;
         actualMap=0;
         level=1;
+        actualMap=1;
         progressBars = new ArrayList<>();
         obstacles = new ArrayList<>();
         gunsInFloor = new ArrayList<>();
@@ -114,7 +115,7 @@ public class GameViewController implements Initializable {
         createMap2();
         createMap3();
 
-        obstacles=map3;
+        obstacles=map1;
 
         createRandomEnemies(level);
 
@@ -213,11 +214,6 @@ public class GameViewController implements Initializable {
                         if (!renderAvatar(avatars.get(i), progressBars.get(i), null))
                             deadEnemies++;
                         //s
-                    }
-                    if (deadEnemies == avatars.size() - 1) { // si mato a todos los enemigos
-                        isRunning = false;
-                        gc.setFill(Color.GREEN);
-                        message.set("WINNER");
                     }
                     doKeyboardActions();
                 });
@@ -327,7 +323,7 @@ public class GameViewController implements Initializable {
     private void createMap2(){
         map2= new ArrayList<>();
         //posicion 0 es el portal
-        map1.add(new Obstacle(canvas, canvas.getWidth()-40,canvas.getHeight()/2, "Portal.png"));
+        map2.add(new Obstacle(canvas, canvas.getWidth()-40,canvas.getHeight()/2, "Portal.png"));
 
         map2.add(new Obstacle(canvas,140,300));
         map2.add(new Obstacle(canvas, 180, 300));
@@ -372,7 +368,7 @@ public class GameViewController implements Initializable {
     private void createMap3(){
         map3= new ArrayList<>();
         //posicion 0 es el portal
-        map1.add(new Obstacle(canvas, canvas.getWidth()-40,canvas.getHeight()/2, "Portal.png"));
+        map3.add(new Obstacle(canvas, canvas.getWidth()-40,canvas.getHeight()/2, "Portal.png"));
 
         map3.add(new Obstacle(canvas, 340, 300));
         map3.add(new Obstacle(canvas, 380, 300));
@@ -427,9 +423,27 @@ public class GameViewController implements Initializable {
             avatar.draw();
             avatar.manageBullets(avatars);
             life.setProgress((double) avatar.getHearts() / 3.0);
-            if (bullets != null) {
+            if (bullets != null) {//los enemigos tienen bullets null
                 bullets.setProgress((double) avatar.numBullets / GameViewController.RELOAD_FACTOR);
+                int deadEnemies=0;
+                for (int i = 1; i < avatars.size(); i++) { // verificar enemigos matados
+                    if (!avatars.get(i).isAlive) deadEnemies++;
+                }score=deadEnemies*100;
+                scoreLbl.setText("Puntaje: " + score);
+                if(deadEnemies == avatars.size() - 1 && avatar.bounds.intersects(obstacles.get(0).bounds.getBoundsInParent())) {//cambiar de mapa
+                    //Si todos los enemigos estan muertos y colisiona con el portal
+                    actualMap++;
+
+                    switch (actualMap){
+                        case 2: obstacles = map2; createRandomEnemies(level+1);break;
+                        case 3: obstacles=map3; createRandomEnemies(level+2); break;
+                        case 4: isRunning = false;
+                    }
+
+
+                }
             }
+
         } else {
             life.setProgress(0);
             if (bullets != null)  bullets.setProgress(0);
@@ -442,7 +456,7 @@ public class GameViewController implements Initializable {
 //    scoreLbl.setText("Puntaje: " + score);
     public boolean detectCollisionRight(Avatar avatar){
 
-        for(int i = 0; i < obstacles.size(); i++){
+        for(int i = 1; i < obstacles.size(); i++){
             if (obstacles.get(i).bounds.intersects(avatar.bounds.getX()+3,avatar.bounds.getY(), 40, 40)) {
                 System.out.println("collision r");
                 return true;
@@ -452,7 +466,7 @@ public class GameViewController implements Initializable {
     }
     public boolean detectCollisionLeft(Avatar avatar){
 
-        for(int i = 0; i < obstacles.size(); i++){
+        for(int i = 1; i < obstacles.size(); i++){
             if (obstacles.get(i).bounds.intersects(avatar.bounds.getX()-3,avatar.bounds.getY(), 40, 40)) {
                 System.out.println("collision l");
                 return true;
@@ -462,7 +476,7 @@ public class GameViewController implements Initializable {
     }
     public boolean detectCollisionUp(Avatar avatar) {
 
-        for (int i = 0; i < obstacles.size(); i++) {
+        for (int i = 1; i < obstacles.size(); i++) {
             //if (obstacles.get(i).bounds.intersects(avatar.pos.x - 20, avatar.pos.y -3- avatar.direction.y - 20, 50, 50)) {
             if (obstacles.get(i).bounds.intersects(avatar.bounds.getX(),avatar.bounds.getY()-3, 40, 40)) {
                 System.out.println("collision up");
@@ -473,7 +487,7 @@ public class GameViewController implements Initializable {
     }
     public boolean detectCollisionDown(Avatar avatar) {
 
-        for (int i = 0; i < obstacles.size(); i++) {
+        for (int i = 1; i < obstacles.size(); i++) {
             if (obstacles.get(i).bounds.intersects(avatar.bounds.getX(),avatar.bounds.getY()+3, 40, 40)) {
                 System.out.println("collision d");
                 return true;
