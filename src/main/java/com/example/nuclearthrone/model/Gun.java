@@ -16,13 +16,27 @@ public class Gun {
     private GraphicsContext gc;
     public Rectangle bounds;
 
-    public Gun(double x, double y, String spritePath, Canvas canvas, Vector pos ) {
-        canvas = this.canvas;
-        gc.getCanvas().getGraphicsContext2D();
-        pos = this.pos;
+    public Gun(double x, double y, Image sprite, Canvas canvas, Vector pos ) {
+        this.canvas = canvas;
+        gc = canvas.getGraphicsContext2D();
+        this.pos = pos;
         bounds = new Rectangle(pos.x, pos.y, 25, 25);
-        this.sprite = new Image(spritePath);
-        randomizePosition(x,y);
+        this.sprite = sprite;
+        randomizePosition(x, y);
+    }
+
+    private boolean checkCollisions() {
+        // Perform collision detection logic here
+        // You can check for collisions with other objects in your game
+        // and return true if a collision occurs, or false otherwise
+        return false; // Placeholder, update with your collision detection logic
+    }
+
+    public void render(GraphicsContext gc) {
+        gc.save();
+        gc.translate(x, y);
+        gc.drawImage(sprite, -sprite.getWidth() / 2, -sprite.getHeight() / 2);
+        gc.restore();
     }
     private void randomizePosition(double w, double h) {
         Random random = new Random();
@@ -39,20 +53,6 @@ public class Gun {
             // If a collision occurred, recursively generate new random positions
             randomizePosition(w,h);
         }
-    }
-
-    private boolean checkCollisions() {
-        // Perform collision detection logic here
-        // You can check for collisions with other objects in your game
-        // and return true if a collision occurs, or false otherwise
-        return false; // Placeholder, update with your collision detection logic
-    }
-
-    public void render(GraphicsContext gc) {
-        gc.save();
-        gc.translate(x, y);
-        gc.drawImage(sprite, -sprite.getWidth() / 2, -sprite.getHeight() / 2);
-        gc.restore();
     }
 
     // Getters and Setters
@@ -78,5 +78,11 @@ public class Gun {
 
     public void setSprite(Image sprite) {
         this.sprite = sprite;
+    }
+
+    public void setPos(Vector pos) {
+        this.pos = pos;
+        bounds.setX(pos.x - 12.5);
+        bounds.setY(pos.y - 12.5);
     }
 }

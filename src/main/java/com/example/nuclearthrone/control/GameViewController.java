@@ -49,10 +49,6 @@ public class GameViewController implements Initializable {
 
     private List<Avatar> avatars;
     private List<Obstacle> obstacles;
-    private List<Gun> gunsInFloor;
-    private Gun gun1;
-    private Gun gun2;
-    private Gun gun3;
     private boolean up = false;
     private boolean left = false;
     private boolean down = false;
@@ -64,6 +60,11 @@ public class GameViewController implements Initializable {
     private int level;
     private int actualMap;
     private int numOfEnemies;
+    private Gun gun1;
+    private Gun gun2;
+    private Gun gun3;
+    private List<Gun> gunsInFloor;
+
     private static final Random random = new Random();
 
 
@@ -92,11 +93,19 @@ public class GameViewController implements Initializable {
         avatar = new Avatar(Game.getInstance().getPlayer(), canvas, avatarImg, Color.YELLOW, new Vector(50, 50), new Vector(1, 1));
         avatars.add(avatar);
 
-//        gun1 = new Gun(0,0, "revolver1.png", canvas, new Vector(canvas.getWidth()-25, canvas.getHeight()-25));
-//        gun2 = new Gun(0,0,"weirdRevolver.png", canvas, new Vector(25, 25));
-//        gun3 = new Gun(0,0, "glock.png", canvas,new Vector(25, -25));
-//        gunsInFloor.add(gun1);
-//        Game.getInstance().setGunsOnFloor(gunsInFloor);
+        Image gun1Image = new Image("file:" + HelloApplication.class.getResource("revolver1.png").getPath());
+        Image gun2Image = new Image("file:" + HelloApplication.class.getResource("weirdRevolver.png").getPath());
+        Image gun3Image = new Image("file:" + HelloApplication.class.getResource("glock.png").getPath());
+
+        gun1 = new Gun(0, 0, gun1Image, canvas, new Vector(canvas.getWidth() - 25, canvas.getHeight() - 25));
+        gun2 = new Gun(0, 0, gun2Image, canvas, new Vector(25, 25));
+        gun3 = new Gun(0, 0, gun3Image, canvas, new Vector(25, -25));
+
+
+        gunsInFloor.add(gun1);
+        gunsInFloor.add(gun2);
+        gunsInFloor.add(gun3);
+        Game.getInstance().setGunsOnFloor(gunsInFloor);
 
 
         createMap1();
@@ -110,6 +119,12 @@ public class GameViewController implements Initializable {
         if(level==3)level(5);
 
         draw();
+
+        System.out.println(gun1Image.getUrl());
+        System.out.println(gun2Image.getUrl());
+        System.out.println(gun3Image.getUrl());
+
+        System.out.println("Numero de armas en el suelo: " + gunsInFloor.size());
     }
 
     private void level(int enemyRange) {
@@ -160,7 +175,7 @@ public class GameViewController implements Initializable {
     }
 
     public void draw() {
-        AtomicReference<String> message= new AtomicReference<>("GAME OVER");//por si pierde
+        AtomicReference<String> message = new AtomicReference<>("GAME OVER"); // por si pierde
 
         new Thread(() -> {
             while (isRunning) {
@@ -168,16 +183,36 @@ public class GameViewController implements Initializable {
                     gc.setFill(Color.BLACK);
                     gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
+                    for (Gun gun : gunsInFloor) {
+                        gun.render(gc);
+                    }
+
+                    for (Gun gun : gunsInFloor) {
+                        if (avatar.collidesWith(gun)) {
+                            avatar.setGun(gun);
+                            gunsInFloor.remove(gun);
+                            break;
+                        }
+                    }
+
+                    if (avatar.hasGun()) {
+                        Gun currentGun = avatar.getGun();
+                        currentGun.setPos(new Vector(10, 10));
+                        currentGun.render(gc);
+                    }
+
                     drawObstacles();
 
-                    renderAvatar(avatar, avatarLife, avatarBullets); //render Player
+                    renderAvatar(avatar, avatarLife, avatarBullets); // render Player
 
                     int deadEnemies = 0;
 
-                    for (int i = 1; i < avatars.size(); i++) {   //render Enemies
-                        if(!renderAvatar(avatars.get(i), progressBars.get(i), null)) deadEnemies++ ; //s
+                    for (int i = 1; i < avatars.size(); i++) { // render Enemies
+                        if (!renderAvatar(avatars.get(i), progressBars.get(i), null))
+                            deadEnemies++;
+                        //s
                     }
-                    if (deadEnemies == avatars.size()-1) { //si mato a todos los enemigos
+                    if (deadEnemies == avatars.size() - 1) { // si mato a todos los enemigos
                         isRunning = false;
                         gc.setFill(Color.GREEN);
                         message.set("WINNER");
@@ -197,7 +232,7 @@ public class GameViewController implements Initializable {
             gc.setFill(Color.RED);
             Font font = new Font("Impact", 38);
             gc.setFont(font);
-            gc.fillText(message+"\n\nPuntaje final: "+score,canvas.getWidth()/2, canvas.getHeight()/2);
+            gc.fillText(message + "\n\nPuntaje final: " + score, canvas.getWidth() / 2, canvas.getHeight() / 2);
         }).start();
     }
 
@@ -251,7 +286,7 @@ public class GameViewController implements Initializable {
                 avatar.reload();
                 break;
             case SPACE:
-                if (avatar.hasBullets()) avatar.shoot();
+                avatar.shoot();
                 break;
         }
     }

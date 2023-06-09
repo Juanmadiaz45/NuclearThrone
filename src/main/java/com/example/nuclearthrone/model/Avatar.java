@@ -26,6 +26,7 @@ public class Avatar {
     private int hearts;
     public boolean isAlive;
     private List<Bullet> bullets;
+    private Gun gun;
     public int numBullets = GameViewController.RELOAD_FACTOR;
 
     public Avatar(String name, Canvas canvas, Image img, Color color, Vector pos, Vector direction){
@@ -53,6 +54,23 @@ public class Avatar {
         gc.fillRect(-20,-20, 40,40);
         gc.drawImage(img, -20,-25, 50,50);
         gc.restore();
+    }
+
+    public boolean collidesWith(Gun gun) {
+        Rectangle gunBounds = new Rectangle(gun.getX() - 12.5, gun.getY() - 12.5, 25, 25);
+        return bounds.intersects(gunBounds.getBoundsInLocal());
+    }
+
+    public void setGun(Gun gun) {
+        this.gun = gun;
+    }
+
+    public boolean hasGun() {
+        return gun != null;
+    }
+
+    public Gun getGun() {
+        return gun;
     }
 
     public void setPosition(double x, double y) {
