@@ -88,36 +88,32 @@ public class GameViewController implements Initializable {
         Image avatarImg = new Image("file:" + HelloApplication.class.getResource("RebelWalk1.png").getPath());
         avatar = new Avatar(Game.getInstance().getPlayer(), canvas, avatarImg, Color.YELLOW, new Vector(50, 50), new Vector(1, 1));
         avatars.add(avatar);
-        String weaponPath1 = "revolver1.png";
-        String weaponPath2 = "weirdRevolver.png";
-        String weaponPath3 = "glock.png";
-        gun1 = new Gun(0,0, weaponPath1, canvas, new Vector(canvas.getWidth()-25, canvas.getHeight()-25));
-        gun2 = new Gun(0,0,weaponPath2, canvas, new Vector(25, 25));
-        gun3 = new Gun(0,0, weaponPath3, canvas,new Vector(25, -25));
-        gunsInFloor.add(gun1);
-        Game.getInstance().setGunsOnFloor(gunsInFloor);
+
+//        gun1 = new Gun(0,0, "revolver1.png", canvas, new Vector(canvas.getWidth()-25, canvas.getHeight()-25));
+//        gun2 = new Gun(0,0,"weirdRevolver.png", canvas, new Vector(25, 25));
+//        gun3 = new Gun(0,0, "glock.png", canvas,new Vector(25, -25));
+//        gunsInFloor.add(gun1);
+//        Game.getInstance().setGunsOnFloor(gunsInFloor);
 
 
         createMap1();
         createMap2();
         createMap3();
-        if(level==1)level1();
-        //if(level==2)level2();
-       // if(level==3)level3();
 
+        obstacles=map3;
 
+        if(level==1)level(3);
+        if(level==2)level(4);
+        if(level==3)level(5);
 
         draw();
     }
 
-    private void level1() {
-        numOfEnemies = random.nextInt((3)+1);
+    private void level(int enemyRange) {
+        numOfEnemies = random.nextInt((enemyRange)+1);
 
         progressBars.add(avatarLife);
 
-        //createMap1();
-        //createMap2();
-        createMap3();
         for (int i = 1; i <= numOfEnemies; i++) {
             int n=(i-1)%3+1;
             Image enemy1Img = new Image("file:" + HelloApplication.class.getResource("Enemy"+n+".gif").getPath());
@@ -132,13 +128,10 @@ public class GameViewController implements Initializable {
             progressBars.add(i,progressBar); // Add the ProgressBar to the list
             enemyAI(enemy);
         }
-
         Game.getInstance().setAvatars(avatars);
 
         avatarBullets.setProgress(1);
         avatarBullets.setStyle("-fx-accent: green;");
-
-
     }
     private Vector generateRandomPosition(){
 
@@ -323,7 +316,6 @@ public class GameViewController implements Initializable {
         map2.add(new Obstacle(canvas, 140, 120));
         map2.add(new Obstacle(canvas, 140, 80));
 
-
         map2.add(new Obstacle(canvas, 500, 320));
         map2.add(new Obstacle(canvas, 500, 360));
         map2.add(new Obstacle(canvas, 500, 400));
@@ -380,11 +372,12 @@ public class GameViewController implements Initializable {
             obstacles.get(i).draw();
         }
     }
+
+
     private void renderGun(Gun gun){
 
-
-
     }
+
     private boolean renderAvatar(Avatar avatar, ProgressBar life, ProgressBar bullets) {
         //retorna false si esta muerto
         //Si muere el jugador principal (El que no tenga color rojo)
