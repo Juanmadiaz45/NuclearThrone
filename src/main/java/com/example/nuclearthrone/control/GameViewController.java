@@ -27,6 +27,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class GameViewController implements Initializable {
+    private static GameViewController instance;
     @FXML
     private Canvas canvas;
     @FXML
@@ -42,15 +43,11 @@ public class GameViewController implements Initializable {
     private Button tryAgainButton;
     @FXML
     private ProgressBar avatarLife;
-
     @FXML
     private VBox progressBarContainer;
-
     @FXML
     private ProgressBar avatarBullets;
     private List<ProgressBar> progressBars; // List to store the ProgressBar elements
-
-
     private List<Avatar> avatars;
     private List<Obstacle> obstacles;
     private boolean up = false;
@@ -68,15 +65,13 @@ public class GameViewController implements Initializable {
     private Gun gun2;
     private Gun gun3;
     private List<Gun> gunsInFloor;
-
     private static final Random random = new Random();
-
-
-
     public static final int RELOAD_FACTOR = 10;
-
+    public static GameViewController getInstance() {
+        return instance;
+    }
     public GameViewController() {
-
+        instance = this;
         avatars = new ArrayList<>();
         score=0;
         actualMap=0;
@@ -88,6 +83,8 @@ public class GameViewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        System.out.println("inicializado a nivel "+level);
+        isRunning=true;
         gc = canvas.getGraphicsContext2D();
         canvas.setFocusTraversable(true);
         canvas.setOnKeyPressed(this::onKeyPressed);
@@ -119,9 +116,8 @@ public class GameViewController implements Initializable {
 
         obstacles=map3;
 
-        if(level==1)level(3);
-        if(level==2)level(4);
-        if(level==3)level(5);
+        createRandomEnemies(level);
+
 
         draw();
 
@@ -132,8 +128,10 @@ public class GameViewController implements Initializable {
         System.out.println("Numero de armas en el suelo: " + gunsInFloor.size());
     }
 
-    private void level(int enemyRange) {
-        numOfEnemies = random.nextInt((enemyRange)+1);
+    private void createRandomEnemies(int enemyRange) {
+        System.out.println("nivel "+level);
+        numOfEnemies = level+random.nextInt((2)+1);
+        System.out.println(numOfEnemies);
         progressBarContainer.getChildren().removeAll();
 
         for (int i = 1; i <= numOfEnemies; i++) {
@@ -230,13 +228,7 @@ public class GameViewController implements Initializable {
                     throw new RuntimeException(e);
                 }
             }
-            gc.setFill(Color.BLACK);
-            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-            gc.setTextAlign(TextAlignment.CENTER);
-            gc.setFill(Color.RED);
-            Font font = new Font("Impact", 38);
-            gc.setFont(font);
-            gc.fillText(message + "\n\nPuntaje final: " + score, canvas.getWidth() / 2, canvas.getHeight() / 2);
+            onEndGameButton();//mostrar pantalla de endgame
         }).start();
     }
 
@@ -554,42 +546,16 @@ public class GameViewController implements Initializable {
         }).start();
     }
 
-    private void resetGame(){
-
-        canvas.setFocusTraversable(false);
-        isRunning = true;
-        score = 0;
-        actualMap = 0;
-        level = 1;
-        avatars.clear();
-        progressBars.clear();
-        obstacles.clear();
-        gunsInFloor.clear();
-
-
-
-        initialize(null,null);
-    }
-
     @FXML
     public void onTryAgainButton(ActionEvent actionEvent){
-
-        resetGame();
-
-        canvas.setOnKeyPressed(this::onKeyPressed);
-
-        canvas.setOnKeyReleased(this::onKeyReleased);
-
         System.out.println("Try Again button");
-
         HelloApplication.hideWindow((Stage) canvas.getScene().getWindow());
-
         HelloApplication.showWindow("MenuView");
 
     }
 
     @FXML
-    public void onEndGameButton(ActionEvent actionEvent) {
+    public void onEndGameButton() {
         isRunning = false;
         System.out.println("EndGameButton");
         AtomicReference<String> message = new AtomicReference<>("GAME OVER");
@@ -600,6 +566,7 @@ public class GameViewController implements Initializable {
         Font font = new Font("Impact", 38);
         gc.setFont(font);
         gc.fillText(message + "\n\nPuntaje final: " + score, canvas.getWidth() / 2, canvas.getHeight() / 2);
+
     }
 
     public List<Gun> getGunsInFloor() {
@@ -613,6 +580,8 @@ public class GameViewController implements Initializable {
 
     public static void setLevel(int level) {
         GameViewController.level = level;
+        System.out.println("nivel actualizado "+level);
+
 
     }
 }

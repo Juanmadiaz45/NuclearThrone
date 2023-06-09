@@ -1,5 +1,6 @@
 package com.example.nuclearthrone;
 
+import com.example.nuclearthrone.control.GameViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -35,10 +36,11 @@ public class HelloApplication extends Application {
             Scene menuScene = new Scene(menuRoot);
             scenes.put("MenuView", menuScene);
 
-            FXMLLoader gameLoader = new FXMLLoader(HelloApplication.class.getResource("GameView.fxml"));
-            StackPane gameRoot = gameLoader.load();
-            Scene gameScene = new Scene(gameRoot);
-            scenes.put("GameView", gameScene);
+//            FXMLLoader gameLoader = new FXMLLoader(HelloApplication.class.getResource("GameView.fxml"));
+//            StackPane gameRoot = gameLoader.load();
+//            Scene gameScene = new Scene(gameRoot);
+//            scenes.put("GameView", gameScene);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,13 +74,19 @@ public class HelloApplication extends Application {
         primaryStage.show();
     }
 
-    public static void open(String fxmlFilePath) {
+
+    public static void openGame(int level) {
         try {
-            FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource(fxmlFilePath));
-            AnchorPane root = loader.load();
+            FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("GameView.fxml"));
+            GameViewController controller = loader.getController();
+            controller.initialize(null, null);
+            StackPane root = loader.load();
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
+
             primaryStage.show();
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
