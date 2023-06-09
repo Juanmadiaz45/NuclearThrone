@@ -130,7 +130,7 @@ public class GameViewController implements Initializable {
 
     private void createRandomEnemies(int enemyRange) {
         System.out.println("nivel "+level);
-        numOfEnemies = level+random.nextInt((2)+1);
+        numOfEnemies = level+random.nextInt((3)+2);
         System.out.println(numOfEnemies);
         progressBarContainer.getChildren().removeAll();
 
@@ -284,12 +284,13 @@ public class GameViewController implements Initializable {
                 avatar.reload();
                 break;
             case SPACE:
-                if(avatar.getNumBullets() > 0){
+                if( avatar.hasGun() && avatar.getNumBullets() > 0){
                     avatar.shoot();
                 }
                 break;
         }
     }
+
 
     private void createMap1(){
         map1= new ArrayList<>();
