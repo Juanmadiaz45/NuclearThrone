@@ -49,7 +49,7 @@ public class Avatar {
         bounds.setX(pos.x-20);
         bounds.setY(pos.y-20);
 
-        gc.setFill(color.GREEN);
+        gc.setFill(color);
         gc.fillRect(-20,-20, 40,40);
         gc.drawImage(img, -20,-25, 50,50);
         gc.restore();
@@ -68,9 +68,6 @@ public class Avatar {
         direction.y = amp*Math.sin(Math.toRadians(angle));
     }
 
-    public void moveAvatar(){
-
-    }
     public void moveForward(){
 
         int factor = 20;
@@ -114,8 +111,11 @@ public class Avatar {
                     double c1 = bullets.get(i).pos.x - target.get(j).pos.x;
                     double c2 = bullets.get(i).pos.y - target.get(j).pos.y;
                     double distance = Math.sqrt(Math.pow(c1, 2) + Math.pow(c2, 2));
-                    if (distance < 25) {
+                    if (distance < 25 && getColor()!= target.get(i).color) {
                         target.get(j).decreaseHearts();
+
+                        System.out.println(getColor()+"->"+target.get(i).color+ "pum");  //salen del mismo color
+
                         bullets.remove(i);
                         return;
                     }
@@ -162,8 +162,10 @@ public class Avatar {
             pos.x = -Double.MAX_VALUE;
             pos.y = -Double.MAX_VALUE;
         }
-        else
+        else {
+
             hearts--;
+        }
     }
 
     public int getHearts(){
@@ -178,8 +180,8 @@ public class Avatar {
         this.hearts = hearts;
     }
 
-    public Vector getPos() {
-        return pos;
+    public Color getColor() {
+        return color;
     }
 
     public void setPos(Vector pos) {

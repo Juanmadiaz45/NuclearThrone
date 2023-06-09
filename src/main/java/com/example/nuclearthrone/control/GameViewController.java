@@ -1,61 +1,80 @@
 package com.example.nuclearthrone.control;
 
 import com.example.nuclearthrone.HelloApplication;
-import com.example.nuclearthrone.model.Avatar;
-import com.example.nuclearthrone.model.Game;
-import com.example.nuclearthrone.model.Obstacle;
-import com.example.nuclearthrone.model.Vector;
+import com.example.nuclearthrone.model.*;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class GameViewController implements Initializable {
     @FXML
     private Canvas canvas;
+    @FXML
+    private Label scoreLbl;
     private GraphicsContext gc;
     private boolean isRunning = true;
     private Avatar avatar;
-
     @FXML
     private ProgressBar avatarLife;
+
     @FXML
-    private ProgressBar enemy1Life;
-    @FXML
-    private ProgressBar enemy2Life;
-    @FXML
-    private ProgressBar enemy3Life;
+    private VBox progressBarContainer;
+//    @FXML
+//    private ProgressBar enemy1Life;
+//    @FXML
+//    private ProgressBar enemy2Life;
+//    @FXML
+//    private ProgressBar enemy3Life;
     @FXML
     private ProgressBar avatarBullets;
-    private Avatar enemy1;
-    private Image enemy1Img;
-    private Avatar enemy2;
-    private Image enemy2Img;
-    private Avatar enemy3;
-    private Image enemy3Img;
+    private List<ProgressBar> progressBars; // List to store the ProgressBar elements
+
+
     private List<Avatar> avatars;
     private List<Obstacle> obstacles;
     private boolean up = false;
     private boolean left = false;
     private boolean down = false;
     private boolean right = false;
+    private ArrayList<List> maps;
+    private int score;
+    private int level;
+    private int actualMap;
+    private int numOfEnemies;
+    private static final Random random = new Random();
+
+
 
     public static final int RELOAD_FACTOR = 10;
 
     public GameViewController() {
+
         avatars = new ArrayList<>();
         obstacles = new ArrayList<>();
+        maps= new ArrayList<>();
+        score=0;
+        actualMap=0;
+        level=1;
+        progressBars = new ArrayList<>();
     }
 
     @Override
@@ -67,43 +86,72 @@ public class GameViewController implements Initializable {
 
         Image avatarImg = new Image("file:" + HelloApplication.class.getResource("RebelWalk1.png").getPath());
         avatar = new Avatar(Game.getInstance().getPlayer(), canvas, avatarImg, Color.YELLOW, new Vector(50, 50), new Vector(1, 1));
-
-        Image enemy1Img = new Image("file:" + HelloApplication.class.getResource("Enemy1.gif").getPath());
-        enemy1 = new Avatar("Enemy1", canvas, enemy1Img, Color.BLUE, new Vector(canvas.getWidth() - 50, canvas.getHeight() - 50), new Vector(-2, -2));
-
-        Image enemy2Img = new Image("file:" + HelloApplication.class.getResource("Enemy2.gif").getPath());
-        enemy2 = new Avatar("Enemy2", canvas, enemy2Img, Color.RED, new Vector(canvas.getWidth() - 50, canvas.getHeight() - 50), new Vector(-2, -2));
-
-        Image enemy3Img = new Image("file:" + HelloApplication.class.getResource("Enemy3.gif").getPath());
-        enemy3 = new Avatar("Enemy3", canvas, enemy3Img, Color.PURPLE, new Vector(50, canvas.getHeight() - 100), new Vector(2, -2));
-
         avatars.add(avatar);
-        avatars.add(enemy1);
-        avatars.add(enemy2);
-        avatars.add(enemy3);
+        if(level==1)level1();
+        //if(level==2)level2();
+       // if(level==3)level3();
 
-        Game.getInstance().setAvatars(avatars);
 
-        avatarLife.setProgress(1);
-        enemy1Life.setProgress(1);
-        enemy2Life.setProgress(1);
-        enemy3Life.setProgress(1);
-
-        avatarBullets.setProgress(1);
-        avatarBullets.setStyle("-fx-accent: green;");
-
-        setUpWalls();
-
-        enemy1AI();
-
-        enemy2AI();
-
-        enemy3AI();
 
         draw();
     }
 
+    private void level1() {
+        numOfEnemies = random.nextInt((3)+1);
+
+        progressBars.add(avatarLife);
+
+        //createMap1();
+        //createMap2();
+        createMap3();
+        for (int i = 1; i <= numOfEnemies; i++) {
+            int n=(i-1)%3+1;
+            Image enemy1Img = new Image("file:" + HelloApplication.class.getResource("Enemy"+n+".gif").getPath());
+            Avatar enemy = new Avatar("Enemy"+i, canvas, enemy1Img, Color.RED, generateRandomPosition(), new Vector(-2, -2));
+            avatars.add(enemy); //creates and adds the enemy
+            System.out.println("Enemigo"+i+"creado");
+
+            ProgressBar progressBar = new ProgressBar();
+            progressBar.setPrefWidth(200.0);
+            progressBar.setProgress(1);
+            progressBarContainer.getChildren().add(progressBar);
+            progressBars.add(i,progressBar); // Add the ProgressBar to the list
+            enemyAI(enemy);
+        }
+
+        Game.getInstance().setAvatars(avatars);
+
+        avatarBullets.setProgress(1);
+        avatarBullets.setStyle("-fx-accent: green;");
+
+
+    }
+    private Vector generateRandomPosition(){
+
+        int x = random.nextInt(((int)canvas.getWidth()-40)+25);
+        int y = random.nextInt(((int)canvas.getHeight()-40)+25);
+        if(!checkColission(x,y)) return new Vector(x,y);
+        return generateRandomPosition();
+    }
+    private boolean checkColission(int x, int y){//true si colisionan
+        for(int i = 0; i < obstacles.size(); i++){
+            if (obstacles.get(i).bounds.intersects(x-20,y-20, 45, 45)) {
+                System.out.println("colides");
+                return true;
+            }
+        }
+        for(int i = 0; i < avatars.size(); i++){
+            if (avatars.get(i).bounds.intersects(x-20,y-20, 45, 45)) {
+                System.out.println("colides");
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void draw() {
+        AtomicReference<String> message= new AtomicReference<>("GAME OVER");//por si pierde
+
         new Thread(() -> {
             while (isRunning) {
                 Platform.runLater(() -> {
@@ -112,31 +160,20 @@ public class GameViewController implements Initializable {
 
                     drawObstacles();
 
-                    renderAvatar(avatar, avatarLife, avatarBullets);
-                    renderAvatar(enemy1, enemy1Life, null);
-                    renderAvatar(enemy2, enemy2Life, null);
-                    renderAvatar(enemy3, enemy3Life, null);
+                    renderAvatar(avatar, avatarLife, avatarBullets); //render Player
 
-                    int count = 0;
-                    for (Avatar avatar : avatars) {
-                        if (!avatar.isAlive) count++;
+                    int deadEnemies = 0;
+
+                    for (int i = 1; i < avatars.size(); i++) {   //render Enemies
+                        if(!renderAvatar(avatars.get(i), progressBars.get(i), null)) deadEnemies++ ; //s
                     }
-
-                    if (count == 3) {
+                    if (deadEnemies == avatars.size()-1) { //si mato a todos los enemigos
                         isRunning = false;
-                        for (Avatar avatar : avatars)
-                            if (avatar.isAlive)
-                                Game.getInstance().winner(avatar);
-
-                        Game.getInstance().update();
-                        HelloApplication.open("WelcomeView.fxml");
-                        Stage stage = (Stage) canvas.getScene().getWindow();
-                        stage.close();
+                        gc.setFill(Color.GREEN);
+                        message.set("WINNER");
                     }
-
                     doKeyboardActions();
                 });
-
                 // Sleep
                 try {
                     Thread.sleep(20);
@@ -144,6 +181,13 @@ public class GameViewController implements Initializable {
                     throw new RuntimeException(e);
                 }
             }
+            gc.setFill(Color.BLACK);
+            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.setFill(Color.RED);
+            Font font = new Font("Impact", 38);
+            gc.setFont(font);
+            gc.fillText(message+"\n\nPuntaje final: "+score,canvas.getWidth()/2, canvas.getHeight()/2);
         }).start();
     }
 
@@ -161,17 +205,7 @@ public class GameViewController implements Initializable {
         if (right && avatar.pos.getX() + 20 < canvas.getWidth() && !detectCollisionRight(avatar)) {
             avatar.pos.setX(avatar.pos.getX() + 3);
         }
-    }
-    private boolean collision(Avatar avatar){
-        for(int i = 0; i < obstacles.size(); i++) {
-            if (obstacles.get(i).bounds.intersects(avatar.bounds.getX()+1,avatar.bounds.getY()+1,40,40)) {
-                System.out.println("collision!!!");
-                return true;
-            }
-        } return false;
-
-    }
-
+    } //mover avatar
     public void onKeyReleased(KeyEvent event){
         switch (event.getCode()){
             case LEFT, A: left = false; break;
@@ -180,7 +214,6 @@ public class GameViewController implements Initializable {
             case DOWN, S: down = false; break;
         }
     }
-
     public void onKeyPressed(KeyEvent event) {
         System.out.println(event.getCode());
         switch (event.getCode()) {
@@ -213,57 +246,114 @@ public class GameViewController implements Initializable {
         }
     }
 
-    private void setUpWalls(){
-
+    private void createMap1(){
         Obstacle obstacle1 = (new Obstacle(canvas, 150, 150));
         Obstacle obstacle2 = new Obstacle(canvas, 150, obstacle1.bounds.getY() + obstacle1.HEIGHT);
-        Obstacle obstacle3 = new Obstacle(canvas, 150, obstacle2.bounds.getY() + obstacle1.HEIGHT);
-        Obstacle obstacle4 = new Obstacle(canvas, 190, obstacle1.bounds.getY());
-        Obstacle obstacle5 = new Obstacle(canvas, 230, obstacle1.bounds.getY());
 
-        Obstacle obstacle6 = new Obstacle(canvas,150,450);
-        Obstacle obstacle7 = new Obstacle(canvas, 150, 410);
-        Obstacle obstacle8 = new Obstacle(canvas, 150, 370);
-        Obstacle obstacle9 = new Obstacle(canvas, 190, 450);
-        Obstacle obstacle10 = new Obstacle(canvas, 230, 450);
-
-        Obstacle obstacle11 = new Obstacle(canvas, 604, 150);
-        Obstacle obstacle12 = new Obstacle(canvas, 604, 190);
-        Obstacle obstacle13 = new Obstacle(canvas, 604, 230);
-        Obstacle obstacle14 = new Obstacle(canvas, 564, 150);
-        Obstacle obstacle15 = new Obstacle(canvas, 524, 150);
-
-        Obstacle obstacle16 = new Obstacle(canvas, 604, 450);
-        Obstacle obstacle17 = new Obstacle(canvas, 604, 410);
-        Obstacle obstacle18 = new Obstacle(canvas, 604, 370);
-        Obstacle obstacle19 = new Obstacle(canvas, 564, 450);
-        Obstacle obstacle20 = new Obstacle(canvas, 524, 450);
-
+        obstacles.add(obstacle1);
         obstacles.add(obstacle2);
-        obstacles.add(obstacle3);
-        obstacles.add(obstacle4);
-        obstacles.add(obstacle5);
-        obstacles.add(obstacle6);
-        obstacles.add(obstacle7);
-        obstacles.add(obstacle8);
-        obstacles.add(obstacle9);
-        obstacles.add(obstacle10);
-        obstacles.add(obstacle11);
-        obstacles.add(obstacle12);
-        obstacles.add(obstacle13);
-        obstacles.add(obstacle14);
-        obstacles.add(obstacle15);
-        obstacles.add(obstacle16);
-        obstacles.add(obstacle17);
-        obstacles.add(obstacle18);
-        obstacles.add(obstacle19);
-        obstacles.add(obstacle20);
+        obstacles.add(new Obstacle(canvas, 150, obstacle2.bounds.getY() + obstacle2.HEIGHT));
+        obstacles.add(new Obstacle(canvas, 190, obstacle1.bounds.getY()));
+        obstacles.add(new Obstacle(canvas, 230, obstacle1.bounds.getY()));
+
+        obstacles.add(new Obstacle(canvas,150,450));
+        obstacles.add(new Obstacle(canvas, 150, 410));
+        obstacles.add(new Obstacle(canvas, 150, 370));
+        obstacles.add(new Obstacle(canvas, 190, 450));
+        obstacles.add(new Obstacle(canvas, 230, 450));
+        obstacles.add(new Obstacle(canvas, 604, 150));
+        obstacles.add(new Obstacle(canvas, 604, 190));
+        obstacles.add(new Obstacle(canvas, 604, 230));
+        obstacles.add(new Obstacle(canvas, 564, 150));
+        obstacles.add(new Obstacle(canvas, 524, 150));
+        obstacles.add(new Obstacle(canvas, 604, 450));
+        obstacles.add(new Obstacle(canvas, 604, 410));
+        obstacles.add(new Obstacle(canvas, 604, 370));
+        obstacles.add(new Obstacle(canvas, 564, 450));
+        obstacles.add(new Obstacle(canvas, 524, 450));
         obstacles.add(new Obstacle(canvas, 377, 300));
         obstacles.add(new Obstacle(canvas, 377, 260));
         obstacles.add(new Obstacle(canvas, 377, 340));
         obstacles.add(new Obstacle(canvas, 337, 300));
         obstacles.add(new Obstacle(canvas, 417, 300));
+    }
+    private void createMap2(){
 
+        obstacles.add(new Obstacle(canvas,140,300));
+        obstacles.add(new Obstacle(canvas, 180, 300));
+        obstacles.add(new Obstacle(canvas, 220, 300));
+        obstacles.add(new Obstacle(canvas, 260, 300));
+        obstacles.add(new Obstacle(canvas, 300, 300));
+        obstacles.add(new Obstacle(canvas, 340, 300));
+        obstacles.add(new Obstacle(canvas, 380, 300));
+        obstacles.add(new Obstacle(canvas, 420, 300));
+        obstacles.add(new Obstacle(canvas, 460, 300));
+        obstacles.add(new Obstacle(canvas, 500, 300));
+
+        obstacles.add(new Obstacle(canvas, 140, 320));
+        obstacles.add(new Obstacle(canvas, 140, 360));
+        obstacles.add(new Obstacle(canvas, 140, 400));
+        obstacles.add(new Obstacle(canvas, 140, 440));
+        obstacles.add(new Obstacle(canvas, 140, 480));
+        obstacles.add(new Obstacle(canvas, 140, 520));
+
+        obstacles.add(new Obstacle(canvas, 140, 280));
+        obstacles.add(new Obstacle(canvas, 140, 240));
+        obstacles.add(new Obstacle(canvas, 140, 200));
+        obstacles.add(new Obstacle(canvas, 140, 160));
+        obstacles.add(new Obstacle(canvas, 140, 120));
+        obstacles.add(new Obstacle(canvas, 140, 80));
+
+
+        obstacles.add(new Obstacle(canvas, 500, 320));
+        obstacles.add(new Obstacle(canvas, 500, 360));
+        obstacles.add(new Obstacle(canvas, 500, 400));
+        obstacles.add(new Obstacle(canvas, 500, 440));
+        obstacles.add(new Obstacle(canvas, 500, 480));
+        obstacles.add(new Obstacle(canvas, 500, 520));
+
+        obstacles.add(new Obstacle(canvas, 500, 280));
+        obstacles.add(new Obstacle(canvas, 500, 240));
+        obstacles.add(new Obstacle(canvas, 500, 200));
+        obstacles.add(new Obstacle(canvas, 500, 160));
+        obstacles.add(new Obstacle(canvas, 500, 120));
+        obstacles.add(new Obstacle(canvas, 500, 80));
+
+
+
+    }
+    private void createMap3(){
+        obstacles.add(new Obstacle(canvas, 340, 300));
+        obstacles.add(new Obstacle(canvas, 380, 300));
+        obstacles.add(new Obstacle(canvas, 420, 300));
+        obstacles.add(new Obstacle(canvas, 460, 300));
+
+        obstacles.add(new Obstacle(canvas, 140, 320));
+        obstacles.add(new Obstacle(canvas, 140, 360));
+        obstacles.add(new Obstacle(canvas, 140, 400));
+
+        obstacles.add(new Obstacle(canvas, 140, 280));
+        obstacles.add(new Obstacle(canvas, 140, 240));
+
+        obstacles.add(new Obstacle(canvas, 140, 120));
+        obstacles.add(new Obstacle(canvas, 140, 80));
+
+        obstacles.add(new Obstacle(canvas, 500, 480));
+        obstacles.add(new Obstacle(canvas, 500, 520));
+
+        obstacles.add(new Obstacle(canvas, 500, 280));
+
+        obstacles.add(new Obstacle(canvas, 500, 160));
+        obstacles.add(new Obstacle(canvas, 500, 120));
+        obstacles.add(new Obstacle(canvas, 500, 80));
+
+        obstacles.add(new Obstacle(canvas, 600, 100));
+        obstacles.add(new Obstacle(canvas, 640, 140));
+        obstacles.add(new Obstacle(canvas, 680, 180));
+
+        obstacles.add(new Obstacle(canvas, 600, 500));
+        obstacles.add(new Obstacle(canvas, 640, 540));
+        obstacles.add(new Obstacle(canvas, 680, 580));
     }
 
     private void drawObstacles(){
@@ -272,7 +362,11 @@ public class GameViewController implements Initializable {
         }
     }
 
-    private void renderAvatar(Avatar avatar, ProgressBar life, ProgressBar bullets) {
+    private boolean renderAvatar(Avatar avatar, ProgressBar life, ProgressBar bullets) {
+        //retorna false si esta muerto
+        //Si muere el jugador principal (El que no tenga color rojo)
+        if(!avatar.isAlive && avatar.color!=Color.RED) isRunning=false;
+
         if (avatar.isAlive) {
             avatar.draw();
             avatar.manageBullets(avatars);
@@ -282,11 +376,14 @@ public class GameViewController implements Initializable {
             }
         } else {
             life.setProgress(0);
-            if (bullets != null) {
-                bullets.setProgress(0);
-            }
+            if (bullets != null)  bullets.setProgress(0);
+
+            return false;
         }
+        return true;
     }
+//    score += 10;
+//    scoreLbl.setText("Puntaje: " + score);
     public boolean detectCollisionRight(Avatar avatar){
 
         for(int i = 0; i < obstacles.size(); i++){
@@ -297,7 +394,6 @@ public class GameViewController implements Initializable {
         }
         return false;
     }
-
     public boolean detectCollisionLeft(Avatar avatar){
 
         for(int i = 0; i < obstacles.size(); i++){
@@ -308,7 +404,6 @@ public class GameViewController implements Initializable {
         }
         return false;
     }
-
     public boolean detectCollisionUp(Avatar avatar) {
 
         for (int i = 0; i < obstacles.size(); i++) {
@@ -320,7 +415,6 @@ public class GameViewController implements Initializable {
         }
         return false;
     }
-
     public boolean detectCollisionDown(Avatar avatar) {
 
         for (int i = 0; i < obstacles.size(); i++) {
@@ -336,8 +430,8 @@ public class GameViewController implements Initializable {
         double newX = avatar.pos.getX() + avatar.direction.x;
         double newY = avatar.pos.getY() + avatar.direction.y;
 
-        if (newX + 25 >= canvas.getWidth() || newX - 25 <= 0 ||
-                newY + 25 >= canvas.getHeight() || newY - 25 <= 0) {
+        if (newX + 20 >= canvas.getWidth() || newX - 20 <= 0 ||
+                newY + 20 >= canvas.getHeight() || newY - 20 <= 0) {
             return true;
         }
 
@@ -352,29 +446,7 @@ public class GameViewController implements Initializable {
 
     }
 
-    public boolean detectCollisionBackward(Avatar avatar){
-
-        double newX = avatar.pos.getX() - avatar.direction.x;
-        double newY = avatar.pos.getY() - avatar.direction.y;
-
-        if (newX + 25 >= canvas.getWidth() || newX - 25 <= 0 ||
-                newY + 25 >= canvas.getHeight() || newY - 25 <= 0) {
-            return true;
-        }
-
-        for(int i = 0; i < obstacles.size(); i++){
-
-            if(obstacles.get(i).bounds.intersects(avatar.pos.x - avatar.direction.x - 25, avatar.pos.y - avatar.direction.y - 25, 50, 50))
-                return true;
-
-        }
-
-        return false;
-
-    }
-
-
-    private void enemy1AI() {
+    private void enemyAI(Avatar enemy1) {
         new Thread(() -> {
             while (enemy1.isAlive) {
                 if (!enemy1.hasBullets()) enemy1.reload();
@@ -419,85 +491,9 @@ public class GameViewController implements Initializable {
     }
 
 
-    private void enemy2AI() {
-        new Thread(() -> {
-            while (enemy2.isAlive) {
-                if (!enemy2.hasBullets()) {
-                    enemy2.reload();
-                }
-
-                //(1-3)
-                int random = (int) (Math.random() * (3 - 1 + 1) + 1);
-
-                if (random == 1) {
-                    for (int i = 0; i < 20; i++) {
-                        if (!detectCollisionForward(enemy2)) {
-                            enemy2.moveForward();
-                        } else {
-                            enemy2.changeAngle(180);
-                        }
-                    }
-                }
-
-                if (random == 2) {
-                    enemy2.changeAngle(-25);
-                    enemy2.shoot();
-                }
-
-                if (random == 3) {
-                    enemy2.changeAngle(25);
-                    enemy2.shoot();
-                }
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }).start();
-    }
-
-    private void enemy3AI() {
-        new Thread(() -> {
-            while (enemy3.isAlive) {
-                if (!enemy3.hasBullets()) {
-                    enemy3.reload();
-                }
-
-                //(1-3)
-                int random = (int) (Math.random() * (3 - 1 + 1) + 1);
-
-                if (random == 1) {
-                    for (int i = 0; i < 20; i++) {
-                        if (!detectCollisionForward(enemy3)) {
-                            enemy3.moveForward();
-                        } else {
-                            enemy3.changeAngle(180);
-                        }
-                    }
-                }
-
-                if (random == 2) {
-                    enemy3.changeAngle(-25);
-                    enemy3.shoot();
-                }
-
-                if (random == 3) {
-                    enemy3.changeAngle(25);
-                    enemy3.shoot();
-                }
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }).start();
-    }
-
-    public void onReturnButton() {
+    @FXML
+    public void onEndGameButton(ActionEvent actionEvent) {
+        System.out.println("EndGameButton");
         HelloApplication.hideWindow((Stage) canvas.getScene().getWindow());
         HelloApplication.showWindow("MenuView");
     }

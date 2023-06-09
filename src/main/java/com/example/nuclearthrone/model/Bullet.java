@@ -26,7 +26,6 @@ public class Bullet {
 
         gc.setFill(color);
         gc.fillOval(pos.x-5,pos.y-5, 10,10);
-
         pos.x += direction.x;
         pos.y += direction.y;
     }
