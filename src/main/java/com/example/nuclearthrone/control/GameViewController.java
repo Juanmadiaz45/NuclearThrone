@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
@@ -28,6 +29,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class GameViewController implements Initializable {
     @FXML
     private Canvas canvas;
+    @FXML
+    private Button returnButton;
     @FXML
     private Label scoreLbl;
     private GraphicsContext gc;

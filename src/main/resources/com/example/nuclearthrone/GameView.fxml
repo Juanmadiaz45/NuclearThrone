@@ -19,7 +19,7 @@
             <Label style="-fx-font-family: Arial; -fx-font-size: 12px;" text="Balas" />
         </VBox>
         <VBox alignment="BOTTOM_LEFT" spacing="10.0" style="-fx-background-color: transparent;">
-            <Button mnemonicParsing="false" onAction="#onEndGameButton" prefHeight="35.0" prefWidth="88.0" text="END GAME" />
+            <Button fx:id="returnButton" mnemonicParsing="false" onAction="#onEndGameButton" prefHeight="30.0" prefWidth="90.0" text="END GAME" />
         </VBox>
         <VBox fx:id="progressBarContainer" xmlns:fx="http://javafx.com/fxml/1" alignment="TOP_RIGHT" prefHeight="548.0" prefWidth="565.0" spacing="10.0" style="-fx-background-color: transparent;">
 
