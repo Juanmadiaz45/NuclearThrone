@@ -69,6 +69,8 @@ public class GameViewController implements Initializable {
     private List<Gun> gunsInFloor;
     private static final Random random = new Random();
     private boolean isReloading = false;
+    @FXML
+    StackPane stackPane;
 
     public static final int RELOAD_FACTOR = 10;
     public static GameViewController getInstance() {
@@ -92,11 +94,10 @@ public class GameViewController implements Initializable {
         isRunning=true;
         gc = canvas.getGraphicsContext2D();
         canvas.setFocusTraversable(true);
-        canvas.setOnKeyPressed(this::onKeyPressed);
-        canvas.setOnKeyReleased(this::onKeyReleased);
-        canvas.setOnMousePressed(this::onMousePressed);
-        canvas.setOnMouseMoved(this::onMouseMoved);
-        //canvas.toFront();
+        stackPane.setOnKeyPressed(this::onKeyPressed);
+        stackPane.setOnKeyReleased(this::onKeyReleased);
+        stackPane.setOnMousePressed(this::onMousePressed);
+        stackPane.setOnMouseMoved(this::onMouseMoved);
 
 
         Image avatarImg = new Image("file:" + HelloApplication.class.getResource("RebelWalk1.png").getPath());
@@ -133,8 +134,7 @@ public class GameViewController implements Initializable {
 
         System.out.println("Numero de armas en el suelo: " + gunsInFloor.size());
     }
-    @FXML
-    StackPane stackPane;
+
     private void onMouseMoved(MouseEvent e) {
         double x = e.getX();
         double y = e.getY();
@@ -147,16 +147,17 @@ public class GameViewController implements Initializable {
     }
     @FXML
     private void onMousePressed(MouseEvent e) {
-        System.out.println("X: " +e.getX() + "Y: "+e.getY());
-
-        double diffX = e.getX() - avatar.pos.getX();
-        double diffY = e.getY() - avatar.pos.getY();
-        Vector diff = new Vector(diffX, diffY);
-        diff.normalize();
+        if( avatar.hasGun() && avatar.getNumBullets() > 0){
+            double diffX = e.getX() - avatar.pos.getX();
+            double diffY = e.getY() - avatar.pos.getY();
+            Vector v=new Vector(diffX, diffY);
+            v.normalize();
+            v.setMag(4);
+            avatar.shoot(v);
+        }
 
 
     }
-
     private void createRandomEnemies(int enemyRange) {
         System.out.println("nivel "+level);
         numOfEnemies = level+random.nextInt((3)+1);
@@ -309,6 +310,7 @@ public class GameViewController implements Initializable {
             case LEFT, A:
                 if (avatar.pos.getX() - 3 > 0) {
                     left = true;
+                    System.out.println("left");
                 }
                 break;
             case UP, W:
@@ -329,11 +331,11 @@ public class GameViewController implements Initializable {
             case R:
                 avatar.reload();
                 break;
-            case SPACE:
-                if( avatar.hasGun() && avatar.getNumBullets() > 0){
-                    avatar.shoot();
-                }
-                break;
+//            case SPACE:
+//                if( avatar.hasGun() && avatar.getNumBullets() > 0){
+//                    avatar.shoot();
+//                }
+//                break;
         }
     }
 

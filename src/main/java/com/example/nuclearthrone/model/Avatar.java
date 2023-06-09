@@ -156,6 +156,11 @@ public class Avatar {
         bullets.add(bullet);
         numBullets--;
     }
+    public void shoot(Vector d){
+        Bullet bullet = new Bullet(canvas, color, new Vector(pos.x,pos.y), d);
+        bullets.add(bullet);
+        numBullets--;
+    }
 
     public Vector getCenter() {
         return new Vector(pos.x, pos.y);

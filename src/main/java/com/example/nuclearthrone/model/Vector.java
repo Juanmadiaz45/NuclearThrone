@@ -33,6 +33,10 @@ public class Vector {
     public void setY(double y) {
         this.y = y;
     }
+    public void setMag(int scalar) {
+        this.x *= scalar;
+        this.y *= scalar;
+    }
 
     public void normalize() {
         double magnitude = Math.sqrt(x * x + y * y);
