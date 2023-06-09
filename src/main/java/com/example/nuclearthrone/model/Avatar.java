@@ -51,7 +51,7 @@ public class Avatar {
         bounds.setY(pos.y-20);
 
         gc.setFill(color);
-        gc.fillRect(-20,-20, 40,40);
+        //gc.fillRect(-20,-20, 40,40);
         gc.drawImage(img, -20,-25, 50,50);
         gc.restore();
     }

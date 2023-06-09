@@ -25,12 +25,12 @@
         <VBox alignment="BOTTOM_LEFT" spacing="10.0" style="-fx-background-color: transparent;" />
         <VBox fx:id="progressBarContainer" alignment="TOP_RIGHT" prefHeight="548.0" prefWidth="565.0" spacing="10.0" style="-fx-background-color: transparent;">
          <children>
-            <Button fx:id="tryAgainButton" mnemonicParsing="false" onAction="#onTryAgainButton" prefHeight="35.0" prefWidth="88.0" style="-fx-background-color: #e6f398;" text="Try Again">
+            <Button fx:id="tryAgainButton" mnemonicParsing="false" onAction="#onTryAgainButton" prefHeight="30.0" prefWidth="88.0" style="-fx-background-color: #e6f398;" text="Try Again">
                <font>
                   <Font name="Arial Black" size="12.0" />
                </font>
             </Button>
-               <Button fx:id="endGameButton" mnemonicParsing="false" onAction="#onEndGameButton" prefHeight="35.0" prefWidth="88.0" style="-fx-background-color: #e6f398;" text="END GAME" textAlignment="CENTER">
+               <Button fx:id="endGameButton" mnemonicParsing="false" onAction="#onEndGameButton" prefHeight="30.0" prefWidth="88.0" style="-fx-background-color: #e6f398;" text="END GAME" textAlignment="CENTER">
                <font>
                   <Font name="Arial Black" size="12.0" />
                </font>

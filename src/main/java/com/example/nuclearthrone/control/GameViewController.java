@@ -113,9 +113,6 @@ public class GameViewController implements Initializable {
         gun2 = new Gun(0, 0, gun2Image, canvas,generateRandomPosition(),Color.ORANGE);
         gun3 = new Gun(0, 0, gun3Image, canvas, generateRandomPosition(),Color.BLUE);
 
-        gunsInFloor.add(gun1);
-        gunsInFloor.add(gun2);
-        gunsInFloor.add(gun3);
         Game.getInstance().setGunsOnFloor(gunsInFloor);
 
         createMap1();
@@ -156,13 +153,16 @@ public class GameViewController implements Initializable {
             avatar.shoot(v);
         }
 
-
     }
     private void createRandomEnemies(int enemyRange) {
+
         System.out.println("nivel "+level);
         numOfEnemies = level+random.nextInt((3)+1);
         System.out.println(numOfEnemies);
         progressBarContainer.getChildren().removeAll();
+        gunsInFloor.add(gun1);
+        gunsInFloor.add(gun2);
+        gunsInFloor.add(gun3);
 
         for (int i = 1; i <= numOfEnemies; i++) {
             int n=(i-1)%3+1;
@@ -172,7 +172,8 @@ public class GameViewController implements Initializable {
             System.out.println("Enemigo"+i+"creado");
 
             ProgressBar progressBar = new ProgressBar();
-            progressBar.setPrefWidth(200.0);
+            progressBar.setPrefWidth(100);
+            progressBar.setPrefHeight(15);
             progressBar.setProgress(1);
             progressBarContainer.getChildren().add(progressBar);
             progressBars.add(i,progressBar); // Add the ProgressBar to the list
@@ -639,6 +640,7 @@ public class GameViewController implements Initializable {
     @FXML
     public void onEndGameButton() {
         isRunning = false;
+        stackPane.setOnMouseMoved(null);
         System.out.println("EndGameButton");
         AtomicReference<String> message = new AtomicReference<>("GAME OVER");
         gc.setFill(Color.BLACK);
