@@ -578,7 +578,7 @@ public class GameViewController implements Initializable {
     }
 
 
-    public static void setLevel(int level) {
+    public void setLevel(int level) {
         GameViewController.level = level;
         System.out.println("nivel actualizado "+level);
 

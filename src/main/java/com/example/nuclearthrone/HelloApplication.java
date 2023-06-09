@@ -78,11 +78,10 @@ public class HelloApplication extends Application {
     public static void openGame(int level) {
         try {
             FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("GameView.fxml"));
-            GameViewController controller = loader.getController();
-            controller.initialize(null, null);
             StackPane root = loader.load();
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
+            
 
             primaryStage.show();
 
