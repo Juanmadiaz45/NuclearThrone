@@ -56,6 +56,7 @@ public class GameViewController implements Initializable {
     private boolean left = false;
     private boolean down = false;
     private boolean right = false;
+    public int deadenemies;
     private ArrayList<Obstacle> map1;
     private ArrayList<Obstacle> map2;
     private ArrayList<Obstacle> map3;
@@ -83,6 +84,7 @@ public class GameViewController implements Initializable {
         actualMap=0;
         level=1;
         actualMap=1;
+        deadenemies = 0;
         progressBars = new ArrayList<>();
         obstacles = new ArrayList<>();
         gunsInFloor = new ArrayList<>();
@@ -208,8 +210,6 @@ public class GameViewController implements Initializable {
     }
 
     public void draw() {
-        AtomicReference<String> message = new AtomicReference<>("GAME OVER"); // por si pierde
-
         new Thread(() -> {
             while (isRunning) {
                 Platform.runLater(() -> {
@@ -262,11 +262,11 @@ public class GameViewController implements Initializable {
 
                     renderAvatar(avatar, avatarLife, avatarBullets); // render Player
 
-                    int deadEnemies = 0;
+                    setDeadenemies(0);
 
                     for (int i = 1; i < avatars.size(); i++) { // render Enemies
                         if (!renderAvatar(avatars.get(i), progressBars.get(i), null))
-                            deadEnemies++;
+                            setDeadenemies(deadenemies++);
                         //s
                     }
                     doKeyboardActions();
@@ -277,8 +277,11 @@ public class GameViewController implements Initializable {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
+                if(endGameButton.isPressed()){
+                    endGame();
+                }
             }
-            onEndGameButton();//mostrar pantalla de endgame
+            gameFinished();
         }).start();
     }
 
@@ -515,7 +518,10 @@ public class GameViewController implements Initializable {
                 bullets.setProgress((double) avatar.numBullets / GameViewController.RELOAD_FACTOR);
                 int deadEnemies=0;
                 for (int i = 1; i < avatars.size(); i++) { // verificar enemigos matados
-                    if (!avatars.get(i).isAlive) deadEnemies++;
+                    if (!avatars.get(i).isAlive){
+                        deadEnemies++;
+                        setDeadenemies(deadEnemies);
+                    }
                 }
                 score=deadEnemies*100;
                 scoreLbl.setText("Puntaje: " + score);
@@ -651,12 +657,39 @@ public class GameViewController implements Initializable {
 
     }
 
+    public void gameFinished(){
+        if(avatar.isAlive){
+            String msg = " WINNER";
+            AtomicReference<String> message = new AtomicReference<>(msg);
+            gc.setFill(Color.BLACK);
+            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.setFill(Color.GREEN);
+            Font font = new Font("Impact", 38);
+            gc.setFont(font);
+            gc.fillText(message + "\n\nPuntaje final: " + score, canvas.getWidth() / 2, canvas.getHeight() / 2);
+        }else{
+            String msg = " DEFEAT";
+            AtomicReference<String> message = new AtomicReference<>(msg);
+            gc.setFill(Color.BLACK);
+            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.setFill(Color.RED);
+            Font font = new Font("Impact", 38);
+            gc.setFont(font);
+            gc.fillText(message + "\n\nPuntaje final: " + score, canvas.getWidth() / 2, canvas.getHeight() / 2);
+
+
+        }
+
+    }
+
     @FXML
     public void onEndGameButton() {
         isRunning = false;
         stackPane.setOnMouseMoved(null);
-        System.out.println("EndGameButton");
-        AtomicReference<String> message = new AtomicReference<>("GAME OVER");
+        String msg = "GAME OVER";
+        AtomicReference<String> message = new AtomicReference<>(msg);
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setTextAlign(TextAlignment.CENTER);
@@ -664,6 +697,12 @@ public class GameViewController implements Initializable {
         Font font = new Font("Impact", 38);
         gc.setFont(font);
         gc.fillText(message + "\n\nPuntaje final: " + score, canvas.getWidth() / 2, canvas.getHeight() / 2);
+
+    }
+
+    public void endGame(){
+        isRunning = false;
+        onEndGameButton();
 
     }
 
@@ -680,5 +719,13 @@ public class GameViewController implements Initializable {
         System.out.println("nivel actualizado "+level);
 
 
+    }
+
+    public int getDeadenemies() {
+        return deadenemies;
+    }
+
+    public void setDeadenemies(int deadenemies) {
+        this.deadenemies = deadenemies;
     }
 }

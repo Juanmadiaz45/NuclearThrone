@@ -12,6 +12,7 @@ public class Obstacle {
     private Canvas canvas;
     private GraphicsContext gc;
     public Rectangle bounds;
+    public int hits;
     private Image img;
     public int WIDTH = 40;
     public int HEIGHT = 40;
@@ -20,7 +21,7 @@ public class Obstacle {
     public Obstacle(Canvas canvas, double x, double y){
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
-
+        hits  = 3;
         bounds = new Rectangle(x, y, WIDTH, HEIGHT);
         img = new Image("file:"+ HelloApplication.class.getResource("wall.png").getPath());
         bounds.setFill(new ImagePattern(img));
