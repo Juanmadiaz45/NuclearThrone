@@ -129,10 +129,10 @@ public class Avatar {
                     double c1 = bullets.get(i).pos.x - target.get(j).pos.x;
                     double c2 = bullets.get(i).pos.y - target.get(j).pos.y;
                     double distance = Math.sqrt(Math.pow(c1, 2) + Math.pow(c2, 2));
-                    if (distance < 25 && getColor()!= target.get(i).color) {
+                    if (distance < 25 && getColor()!= target.get(j).color) {
                         target.get(j).decreaseHearts();
 
-                        System.out.println(getColor()+"->"+target.get(i).color+ "pum");  //salen del mismo color
+                        System.out.println(getColor()+"->"+target.get(j).color+ "pum");  //salen del mismo color
 
                         bullets.remove(i);
                         return;
