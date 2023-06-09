@@ -14,7 +14,7 @@ import java.util.Map;
 public class HelloApplication extends Application {
 
     private static Stage primaryStage;
-    private static Map<String, Scene> scenes = new HashMap<>();
+    private static Map<String, Scene> scenes = new HashMap<>(); 
 
     @Override
     public void start(Stage primaryStage) {
