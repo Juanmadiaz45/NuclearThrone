@@ -30,4 +30,8 @@ public class Bullet {
         pos.y += direction.y;
     }
 
+    public Vector getPosition(){
+        return pos;
+    }
+
 }
