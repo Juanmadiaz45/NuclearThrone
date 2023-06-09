@@ -55,7 +55,9 @@ public class GameViewController implements Initializable {
     private boolean left = false;
     private boolean down = false;
     private boolean right = false;
-    private ArrayList<List> maps;
+    private ArrayList<Obstacle> map1;
+    private ArrayList<Obstacle> map2;
+    private ArrayList<Obstacle> map3;
     private int score;
     private int level;
     private int actualMap;
@@ -69,8 +71,6 @@ public class GameViewController implements Initializable {
     public GameViewController() {
 
         avatars = new ArrayList<>();
-        obstacles = new ArrayList<>();
-        maps= new ArrayList<>();
         score=0;
         actualMap=0;
         level=1;
@@ -87,6 +87,10 @@ public class GameViewController implements Initializable {
         Image avatarImg = new Image("file:" + HelloApplication.class.getResource("RebelWalk1.png").getPath());
         avatar = new Avatar(Game.getInstance().getPlayer(), canvas, avatarImg, Color.YELLOW, new Vector(50, 50), new Vector(1, 1));
         avatars.add(avatar);
+
+        createMap1();
+        createMap2();
+        createMap3();
         if(level==1)level1();
         //if(level==2)level2();
        // if(level==3)level3();
@@ -247,113 +251,118 @@ public class GameViewController implements Initializable {
     }
 
     private void createMap1(){
+
+        map1= new ArrayList<>();
+
         Obstacle obstacle1 = (new Obstacle(canvas, 150, 150));
         Obstacle obstacle2 = new Obstacle(canvas, 150, obstacle1.bounds.getY() + obstacle1.HEIGHT);
 
-        obstacles.add(obstacle1);
-        obstacles.add(obstacle2);
-        obstacles.add(new Obstacle(canvas, 150, obstacle2.bounds.getY() + obstacle2.HEIGHT));
-        obstacles.add(new Obstacle(canvas, 190, obstacle1.bounds.getY()));
-        obstacles.add(new Obstacle(canvas, 230, obstacle1.bounds.getY()));
+        map1.add(obstacle1);
+        map1.add(obstacle2);
+        map1.add(new Obstacle(canvas, 150, obstacle2.bounds.getY() + obstacle2.HEIGHT));
+        map1.add(new Obstacle(canvas, 190, obstacle1.bounds.getY()));
+        map1.add(new Obstacle(canvas, 230, obstacle1.bounds.getY()));
 
-        obstacles.add(new Obstacle(canvas,150,450));
-        obstacles.add(new Obstacle(canvas, 150, 410));
-        obstacles.add(new Obstacle(canvas, 150, 370));
-        obstacles.add(new Obstacle(canvas, 190, 450));
-        obstacles.add(new Obstacle(canvas, 230, 450));
-        obstacles.add(new Obstacle(canvas, 604, 150));
-        obstacles.add(new Obstacle(canvas, 604, 190));
-        obstacles.add(new Obstacle(canvas, 604, 230));
-        obstacles.add(new Obstacle(canvas, 564, 150));
-        obstacles.add(new Obstacle(canvas, 524, 150));
-        obstacles.add(new Obstacle(canvas, 604, 450));
-        obstacles.add(new Obstacle(canvas, 604, 410));
-        obstacles.add(new Obstacle(canvas, 604, 370));
-        obstacles.add(new Obstacle(canvas, 564, 450));
-        obstacles.add(new Obstacle(canvas, 524, 450));
-        obstacles.add(new Obstacle(canvas, 377, 300));
-        obstacles.add(new Obstacle(canvas, 377, 260));
-        obstacles.add(new Obstacle(canvas, 377, 340));
-        obstacles.add(new Obstacle(canvas, 337, 300));
-        obstacles.add(new Obstacle(canvas, 417, 300));
+        map1.add(new Obstacle(canvas,150,450));
+        map1.add(new Obstacle(canvas, 150, 410));
+        map1.add(new Obstacle(canvas, 150, 370));
+        map1.add(new Obstacle(canvas, 190, 450));
+        map1.add(new Obstacle(canvas, 230, 450));
+        map1.add(new Obstacle(canvas, 604, 150));
+        map1.add(new Obstacle(canvas, 604, 190));
+        map1.add(new Obstacle(canvas, 604, 230));
+        map1.add(new Obstacle(canvas, 564, 150));
+        map1.add(new Obstacle(canvas, 524, 150));
+        map1.add(new Obstacle(canvas, 604, 450));
+        map1.add(new Obstacle(canvas, 604, 410));
+        map1.add(new Obstacle(canvas, 604, 370));
+        map1.add(new Obstacle(canvas, 564, 450));
+        map1.add(new Obstacle(canvas, 524, 450));
+        map1.add(new Obstacle(canvas, 377, 300));
+        map1.add(new Obstacle(canvas, 377, 260));
+        map1.add(new Obstacle(canvas, 377, 340));
+        map1.add(new Obstacle(canvas, 337, 300));
+        map1.add(new Obstacle(canvas, 417, 300));
+
     }
     private void createMap2(){
+        map2= new ArrayList<>();//crea un nuevo arreglo temporal
 
-        obstacles.add(new Obstacle(canvas,140,300));
-        obstacles.add(new Obstacle(canvas, 180, 300));
-        obstacles.add(new Obstacle(canvas, 220, 300));
-        obstacles.add(new Obstacle(canvas, 260, 300));
-        obstacles.add(new Obstacle(canvas, 300, 300));
-        obstacles.add(new Obstacle(canvas, 340, 300));
-        obstacles.add(new Obstacle(canvas, 380, 300));
-        obstacles.add(new Obstacle(canvas, 420, 300));
-        obstacles.add(new Obstacle(canvas, 460, 300));
-        obstacles.add(new Obstacle(canvas, 500, 300));
+        map2.add(new Obstacle(canvas,140,300));
+        map2.add(new Obstacle(canvas, 180, 300));
+        map2.add(new Obstacle(canvas, 220, 300));
+        map2.add(new Obstacle(canvas, 260, 300));
+        map2.add(new Obstacle(canvas, 300, 300));
+        map2.add(new Obstacle(canvas, 340, 300));
+        map2.add(new Obstacle(canvas, 380, 300));
+        map2.add(new Obstacle(canvas, 420, 300));
+        map2.add(new Obstacle(canvas, 460, 300));
+        map2.add(new Obstacle(canvas, 500, 300));
 
-        obstacles.add(new Obstacle(canvas, 140, 320));
-        obstacles.add(new Obstacle(canvas, 140, 360));
-        obstacles.add(new Obstacle(canvas, 140, 400));
-        obstacles.add(new Obstacle(canvas, 140, 440));
-        obstacles.add(new Obstacle(canvas, 140, 480));
-        obstacles.add(new Obstacle(canvas, 140, 520));
+        map2.add(new Obstacle(canvas, 140, 320));
+        map2.add(new Obstacle(canvas, 140, 360));
+        map2.add(new Obstacle(canvas, 140, 400));
+        map2.add(new Obstacle(canvas, 140, 440));
+        map2.add(new Obstacle(canvas, 140, 480));
+        map2.add(new Obstacle(canvas, 140, 520));
 
-        obstacles.add(new Obstacle(canvas, 140, 280));
-        obstacles.add(new Obstacle(canvas, 140, 240));
-        obstacles.add(new Obstacle(canvas, 140, 200));
-        obstacles.add(new Obstacle(canvas, 140, 160));
-        obstacles.add(new Obstacle(canvas, 140, 120));
-        obstacles.add(new Obstacle(canvas, 140, 80));
-
-
-        obstacles.add(new Obstacle(canvas, 500, 320));
-        obstacles.add(new Obstacle(canvas, 500, 360));
-        obstacles.add(new Obstacle(canvas, 500, 400));
-        obstacles.add(new Obstacle(canvas, 500, 440));
-        obstacles.add(new Obstacle(canvas, 500, 480));
-        obstacles.add(new Obstacle(canvas, 500, 520));
-
-        obstacles.add(new Obstacle(canvas, 500, 280));
-        obstacles.add(new Obstacle(canvas, 500, 240));
-        obstacles.add(new Obstacle(canvas, 500, 200));
-        obstacles.add(new Obstacle(canvas, 500, 160));
-        obstacles.add(new Obstacle(canvas, 500, 120));
-        obstacles.add(new Obstacle(canvas, 500, 80));
+        map2.add(new Obstacle(canvas, 140, 280));
+        map2.add(new Obstacle(canvas, 140, 240));
+        map2.add(new Obstacle(canvas, 140, 200));
+        map2.add(new Obstacle(canvas, 140, 160));
+        map2.add(new Obstacle(canvas, 140, 120));
+        map2.add(new Obstacle(canvas, 140, 80));
 
 
+        map2.add(new Obstacle(canvas, 500, 320));
+        map2.add(new Obstacle(canvas, 500, 360));
+        map2.add(new Obstacle(canvas, 500, 400));
+        map2.add(new Obstacle(canvas, 500, 440));
+        map2.add(new Obstacle(canvas, 500, 480));
+        map2.add(new Obstacle(canvas, 500, 520));
+
+        map2.add(new Obstacle(canvas, 500, 280));
+        map2.add(new Obstacle(canvas, 500, 240));
+        map2.add(new Obstacle(canvas, 500, 200));
+        map2.add(new Obstacle(canvas, 500, 160));
+        map2.add(new Obstacle(canvas, 500, 120));
+        map2.add(new Obstacle(canvas, 500, 80));
 
     }
     private void createMap3(){
-        obstacles.add(new Obstacle(canvas, 340, 300));
-        obstacles.add(new Obstacle(canvas, 380, 300));
-        obstacles.add(new Obstacle(canvas, 420, 300));
-        obstacles.add(new Obstacle(canvas, 460, 300));
+        map3= new ArrayList<>();//crea un nuevo arreglo temporal
 
-        obstacles.add(new Obstacle(canvas, 140, 320));
-        obstacles.add(new Obstacle(canvas, 140, 360));
-        obstacles.add(new Obstacle(canvas, 140, 400));
+        map3.add(new Obstacle(canvas, 340, 300));
+        map3.add(new Obstacle(canvas, 380, 300));
+        map3.add(new Obstacle(canvas, 420, 300));
+        map3.add(new Obstacle(canvas, 460, 300));
 
-        obstacles.add(new Obstacle(canvas, 140, 280));
-        obstacles.add(new Obstacle(canvas, 140, 240));
+        map3.add(new Obstacle(canvas, 140, 320));
+        map3.add(new Obstacle(canvas, 140, 360));
+        map3.add(new Obstacle(canvas, 140, 400));
 
-        obstacles.add(new Obstacle(canvas, 140, 120));
-        obstacles.add(new Obstacle(canvas, 140, 80));
+        map3.add(new Obstacle(canvas, 140, 280));
+        map3.add(new Obstacle(canvas, 140, 240));
 
-        obstacles.add(new Obstacle(canvas, 500, 480));
-        obstacles.add(new Obstacle(canvas, 500, 520));
+        map3.add(new Obstacle(canvas, 140, 120));
+        map3.add(new Obstacle(canvas, 140, 80));
 
-        obstacles.add(new Obstacle(canvas, 500, 280));
+        map3.add(new Obstacle(canvas, 500, 480));
+        map3.add(new Obstacle(canvas, 500, 520));
 
-        obstacles.add(new Obstacle(canvas, 500, 160));
-        obstacles.add(new Obstacle(canvas, 500, 120));
-        obstacles.add(new Obstacle(canvas, 500, 80));
+        map3.add(new Obstacle(canvas, 500, 280));
 
-        obstacles.add(new Obstacle(canvas, 600, 100));
-        obstacles.add(new Obstacle(canvas, 640, 140));
-        obstacles.add(new Obstacle(canvas, 680, 180));
+        map3.add(new Obstacle(canvas, 500, 160));
+        map3.add(new Obstacle(canvas, 500, 120));
+        map3.add(new Obstacle(canvas, 500, 80));
 
-        obstacles.add(new Obstacle(canvas, 600, 500));
-        obstacles.add(new Obstacle(canvas, 640, 540));
-        obstacles.add(new Obstacle(canvas, 680, 580));
+        map3.add(new Obstacle(canvas, 600, 100));
+        map3.add(new Obstacle(canvas, 640, 140));
+        map3.add(new Obstacle(canvas, 680, 180));
+
+        map3.add(new Obstacle(canvas, 600, 500));
+        map3.add(new Obstacle(canvas, 640, 540));
+        map3.add(new Obstacle(canvas, 680, 580));
     }
 
     private void drawObstacles(){
