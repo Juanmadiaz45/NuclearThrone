@@ -37,6 +37,10 @@ public class GameViewController implements Initializable {
     private boolean isRunning = true;
     private Avatar avatar;
     @FXML
+    private Button endGameButton;
+    @FXML
+    private Button tryAgainButton;
+    @FXML
     private ProgressBar avatarLife;
 
     @FXML
@@ -550,12 +554,52 @@ public class GameViewController implements Initializable {
         }).start();
     }
 
+    private void resetGame(){
+
+        canvas.setFocusTraversable(false);
+        isRunning = true;
+        score = 0;
+        actualMap = 0;
+        level = 1;
+        avatars.clear();
+        progressBars.clear();
+        obstacles.clear();
+        gunsInFloor.clear();
+
+
+
+        initialize(null,null);
+    }
+
+    @FXML
+    public void onTryAgainButton(ActionEvent actionEvent){
+
+        resetGame();
+
+        canvas.setOnKeyPressed(this::onKeyPressed);
+
+        canvas.setOnKeyReleased(this::onKeyReleased);
+
+        System.out.println("Try Again button");
+
+        HelloApplication.hideWindow((Stage) canvas.getScene().getWindow());
+
+        HelloApplication.showWindow("MenuView");
+
+    }
 
     @FXML
     public void onEndGameButton(ActionEvent actionEvent) {
+        isRunning = false;
         System.out.println("EndGameButton");
-        HelloApplication.hideWindow((Stage) canvas.getScene().getWindow());
-        HelloApplication.showWindow("MenuView");
+        AtomicReference<String> message = new AtomicReference<>("GAME OVER");
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setFill(Color.RED);
+        Font font = new Font("Impact", 38);
+        gc.setFont(font);
+        gc.fillText(message + "\n\nPuntaje final: " + score, canvas.getWidth() / 2, canvas.getHeight() / 2);
     }
 
     public List<Gun> getGunsInFloor() {

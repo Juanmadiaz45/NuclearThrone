@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.canvas.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<StackPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.nuclearthrone.control.GameViewController">
+<StackPane xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.nuclearthrone.control.GameViewController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -18,11 +22,20 @@
             <ProgressBar fx:id="avatarBullets" prefWidth="200.0" progress="0.0" />
             <Label style="-fx-font-family: Arial; -fx-font-size: 12px;" text="Balas" />
         </VBox>
-        <VBox alignment="BOTTOM_LEFT" spacing="10.0" style="-fx-background-color: transparent;">
-            <Button fx:id="returnButton" mnemonicParsing="false" onAction="#onEndGameButton" prefHeight="30.0" prefWidth="90.0" text="END GAME" />
-        </VBox>
-        <VBox fx:id="progressBarContainer" xmlns:fx="http://javafx.com/fxml/1" alignment="TOP_RIGHT" prefHeight="548.0" prefWidth="565.0" spacing="10.0" style="-fx-background-color: transparent;">
-
-        </VBox>
+        <VBox alignment="BOTTOM_LEFT" spacing="10.0" style="-fx-background-color: transparent;" />
+        <VBox fx:id="progressBarContainer" alignment="TOP_RIGHT" prefHeight="548.0" prefWidth="565.0" spacing="10.0" style="-fx-background-color: transparent;">
+         <children>
+            <Button fx:id="tryAgainButton" mnemonicParsing="false" onAction="#onTryAgainButton" prefHeight="35.0" prefWidth="88.0" style="-fx-background-color: #e6f398;" text="Try Again">
+               <font>
+                  <Font name="Arial Black" size="12.0" />
+               </font>
+            </Button>
+               <Button fx:id="endGameButton" mnemonicParsing="false" onAction="#onEndGameButton" prefHeight="35.0" prefWidth="88.0" style="-fx-background-color: #e6f398;" text="END GAME" textAlignment="CENTER">
+               <font>
+                  <Font name="Arial Black" size="12.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
     </children>
 </StackPane>
