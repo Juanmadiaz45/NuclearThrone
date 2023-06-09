@@ -158,7 +158,7 @@ public class GameViewController implements Initializable {
     private void createRandomEnemies(int enemyRange) {
 
         System.out.println("nivel "+level);
-        numOfEnemies = random.nextInt((3)+enemyRange);
+        numOfEnemies = level+ random.nextInt((3)+enemyRange);
         System.out.println(numOfEnemies);
         progressBarContainer.getChildren().removeAll();
         gunsInFloor.add(gun1);
@@ -244,8 +244,6 @@ public class GameViewController implements Initializable {
                         //gc.setFont(font);
                         gc.fillText("Current Gun: ", 5,140);
                         currentGun.setPos(new Vector(15, 160));
-
-
                         currentGun.render();
                     }
 
@@ -255,8 +253,6 @@ public class GameViewController implements Initializable {
                             avatar.getBullets().remove(i); // Elimina el disparo si hay colisión
                         }
                     }
-
-
                     drawObstacles();
 
                     renderAvatar(avatar, avatarLife, avatarBullets); // render Player
@@ -277,11 +273,11 @@ public class GameViewController implements Initializable {
                     throw new RuntimeException(e);
                 }
                 if(endGameButton.isPressed()){
-                    endGame();
+                    onEndGameButton();
                 }
             }
-            gameFinished();
-            //endGame();
+            //gameFinished();
+            onEndGameButton();
 
         }).start();
     }
@@ -489,7 +485,6 @@ public class GameViewController implements Initializable {
         map3.add(new Obstacle(canvas, 640, 540));
         map3.add(new Obstacle(canvas, 680, 580));
     }
-
     private void drawObstacles() {
         for (Obstacle obstacle : obstacles) {
             if (obstacle.getHitCount() < 4) {
@@ -497,13 +492,6 @@ public class GameViewController implements Initializable {
             }
         }
     }
-
-
-
-    private void renderGun(Gun gun){
-
-    }
-
     private boolean renderAvatar(Avatar avatar, ProgressBar life, ProgressBar bullets) {
         //retorna false si esta muerto
         //Si muere el jugador principal (El que no tenga color rojo)
@@ -528,8 +516,8 @@ public class GameViewController implements Initializable {
                     //Si todos los enemigos estan muertos y colisiona con el portal
                     actualMap++;
                     switch (actualMap){
-                        case 2: obstacles = map2; createRandomEnemies(level+1);break;
-                        case 3: obstacles=map3; createRandomEnemies(level+2); break;
+                        case 2: obstacles = map2; createRandomEnemies(1);break;
+                        case 3: obstacles=map3; createRandomEnemies(2); break;
                         case 4: isRunning = false;
                     }
                 }
@@ -656,9 +644,12 @@ public class GameViewController implements Initializable {
 
     }
 
-    public void gameFinished(){
+    @FXML
+    public void onEndGameButton() {
         stackPane.setOnMouseMoved(null);
-        if(avatar.isAlive){
+         isRunning = false;
+
+        if(avatar.isAlive && actualMap>3){
             String msg = " WINNER";
             AtomicReference<String> message = new AtomicReference<>(msg);
             gc.setFill(Color.BLACK);
@@ -680,42 +671,22 @@ public class GameViewController implements Initializable {
             gc.fillText(message + "\n\nPuntaje final: " + score, canvas.getWidth() / 2, canvas.getHeight() / 2);
 
         }
-    }
-    @FXML
-    public void onEndGameButton() {
-        isRunning = false;
-        stackPane.setOnMouseMoved(null);
-        String msg = "GAME OVER";
-        AtomicReference<String> message = new AtomicReference<>(msg);
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        gc.setTextAlign(TextAlignment.CENTER);
-        gc.setFill(Color.RED);
-        Font font = new Font("Impact", 38);
-        gc.setFont(font);
-        gc.fillText(message + "\n\nPuntaje final: " + score, canvas.getWidth() / 2, canvas.getHeight() / 2);
-
-    }
-
-    public void endGame(){
-        isRunning = false;
-        onEndGameButton();
-
-    }
-
-    public List<Gun> getGunsInFloor() {
-        return gunsInFloor;
-    }
-
-    public void setGunsInFloor(List<Gun> gunsInFloor) {
-        this.gunsInFloor = gunsInFloor;
+//        isRunning = false;
+//        stackPane.setOnMouseMoved(null);
+//        String msg = "GAME OVER";
+//        AtomicReference<String> message = new AtomicReference<>(msg);
+//        gc.setFill(Color.BLACK);
+//        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+//        gc.setTextAlign(TextAlignment.CENTER);
+//        gc.setFill(Color.RED);
+//        Font font = new Font("Impact", 38);
+//        gc.setFont(font);
+//        gc.fillText(message + "\n\nPuntaje final: " + score, canvas.getWidth() / 2, canvas.getHeight() / 2);
     }
 
     public void setLevel(int level) {
         GameViewController.level = level;
         System.out.println("nivel actualizado "+level);
-
-
     }
 
     public int getDeadenemies() {
