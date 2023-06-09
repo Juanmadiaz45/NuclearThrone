@@ -57,7 +57,7 @@ public class GameViewController implements Initializable {
     private ArrayList<Obstacle> map2;
     private ArrayList<Obstacle> map3;
     private int score;
-    private int level;
+    private static int level;
     private int actualMap;
     private int numOfEnemies;
     private Gun gun1;
@@ -92,6 +92,7 @@ public class GameViewController implements Initializable {
         Image avatarImg = new Image("file:" + HelloApplication.class.getResource("RebelWalk1.png").getPath());
         avatar = new Avatar(Game.getInstance().getPlayer(), canvas, avatarImg, Color.YELLOW, new Vector(50, 50), new Vector(1, 1));
         avatars.add(avatar);
+        progressBars.add(avatarLife);
 
         Image gun1Image = new Image("file:" + HelloApplication.class.getResource("revolver1.png").getPath());
         Image gun2Image = new Image("file:" + HelloApplication.class.getResource("weirdRevolver.png").getPath());
@@ -129,8 +130,7 @@ public class GameViewController implements Initializable {
 
     private void level(int enemyRange) {
         numOfEnemies = random.nextInt((enemyRange)+1);
-
-        progressBars.add(avatarLife);
+        progressBarContainer.getChildren().removeAll();
 
         for (int i = 1; i <= numOfEnemies; i++) {
             int n=(i-1)%3+1;
@@ -292,12 +292,13 @@ public class GameViewController implements Initializable {
     }
 
     private void createMap1(){
-
         map1= new ArrayList<>();
+
+        //portal obstaculo 0 en el arreglo
+        map1.add(new Obstacle(canvas, canvas.getWidth()-40,canvas.getHeight()/2, "Portal.png"));
 
         Obstacle obstacle1 = (new Obstacle(canvas, 150, 150));
         Obstacle obstacle2 = new Obstacle(canvas, 150, obstacle1.bounds.getY() + obstacle1.HEIGHT);
-
         map1.add(obstacle1);
         map1.add(obstacle2);
         map1.add(new Obstacle(canvas, 150, obstacle2.bounds.getY() + obstacle2.HEIGHT));
@@ -325,9 +326,12 @@ public class GameViewController implements Initializable {
         map1.add(new Obstacle(canvas, 337, 300));
         map1.add(new Obstacle(canvas, 417, 300));
 
+
     }
     private void createMap2(){
-        map2= new ArrayList<>();//crea un nuevo arreglo temporal
+        map2= new ArrayList<>();
+        //posicion 0 es el portal
+        map1.add(new Obstacle(canvas, canvas.getWidth()-40,canvas.getHeight()/2, "Portal.png"));
 
         map2.add(new Obstacle(canvas,140,300));
         map2.add(new Obstacle(canvas, 180, 300));
@@ -370,7 +374,9 @@ public class GameViewController implements Initializable {
 
     }
     private void createMap3(){
-        map3= new ArrayList<>();//crea un nuevo arreglo temporal
+        map3= new ArrayList<>();
+        //posicion 0 es el portal
+        map1.add(new Obstacle(canvas, canvas.getWidth()-40,canvas.getHeight()/2, "Portal.png"));
 
         map3.add(new Obstacle(canvas, 340, 300));
         map3.add(new Obstacle(canvas, 380, 300));
@@ -558,5 +564,11 @@ public class GameViewController implements Initializable {
 
     public void setGunsInFloor(List<Gun> gunsInFloor) {
         this.gunsInFloor = gunsInFloor;
+    }
+
+
+    public static void setLevel(int level) {
+        GameViewController.level = level;
+
     }
 }

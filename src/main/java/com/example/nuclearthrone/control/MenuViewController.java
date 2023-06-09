@@ -39,6 +39,7 @@ public class MenuViewController implements Initializable {
     public void onFacilButton(ActionEvent actionEvent) {
         //comenzar el juego en modo facil
         HelloApplication.hideWindow((Stage) MenuTitle.getScene().getWindow());
+        GameViewController.setLevel(1);
         HelloApplication.showWindow("GameView");
     }
 
@@ -46,6 +47,8 @@ public class MenuViewController implements Initializable {
     public void onMedioButton() {
         //comenzar el juego en modo medio
         HelloApplication.hideWindow((Stage) MenuTitle.getScene().getWindow());
+        GameViewController.setLevel(2);
+
         HelloApplication.showWindow("GameView");
 
     }
@@ -53,6 +56,7 @@ public class MenuViewController implements Initializable {
     public void onDificilButton() {
         //comenzar el juego en modo dificil
         HelloApplication.hideWindow((Stage) MenuTitle.getScene().getWindow());
+        GameViewController.setLevel(3);
         HelloApplication.showWindow("GameView");
 
     }
