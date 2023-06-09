@@ -1,4 +1,4 @@
-package com.example.nuclearthrone;
+package com.example.nuclearthrone;a
 
 import com.example.nuclearthrone.control.GameViewController;
 import javafx.application.Application;

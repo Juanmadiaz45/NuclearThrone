@@ -66,6 +66,8 @@ public class GameViewController implements Initializable {
     private Gun gun3;
     private List<Gun> gunsInFloor;
     private static final Random random = new Random();
+    private boolean isReloading = false;
+
     public static final int RELOAD_FACTOR = 10;
     public static GameViewController getInstance() {
         return instance;
@@ -278,7 +280,9 @@ public class GameViewController implements Initializable {
                 avatar.reload();
                 break;
             case SPACE:
-                avatar.shoot();
+                if(avatar.getNumBullets() > 0){
+                    avatar.shoot();
+                }
                 break;
         }
     }

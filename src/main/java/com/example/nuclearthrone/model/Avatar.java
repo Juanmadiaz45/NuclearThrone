@@ -163,9 +163,7 @@ public class Avatar {
         return new Vector(pos.x, pos.y);
     }
 
-
-
-    public void reload(){
+    public void reload() {
         numBullets = GameViewController.RELOAD_FACTOR;
     }
 
@@ -204,5 +202,9 @@ public class Avatar {
 
     public void setPos(Vector pos) {
         this.pos = pos;
+    }
+
+    public int getNumBullets(){
+        return numBullets;
     }
 }
