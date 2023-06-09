@@ -3,6 +3,7 @@ package com.example.nuclearthrone.model;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.util.Random;
@@ -15,14 +16,17 @@ public class Gun {
     public Vector pos;
     private GraphicsContext gc;
     public Rectangle bounds;
+    public Color color;
 
-    public Gun(double x, double y, Image sprite, Canvas canvas, Vector pos ) {
+    public Gun(double x, double y, Image sprite, Canvas canvas, Vector pos, Color color) {
         this.canvas = canvas;
         gc = canvas.getGraphicsContext2D();
         this.pos = pos;
         bounds = new Rectangle(pos.x, pos.y, 25, 25);
+        this.x=x;
+        this.y=y;
+        this.color=color;
         this.sprite = sprite;
-        randomizePosition(x, y);
     }
 
     private boolean checkCollisions() {
@@ -32,27 +36,14 @@ public class Gun {
         return false; // Placeholder, update with your collision detection logic
     }
 
-    public void render(GraphicsContext gc) {
+
+    public void render( ) {
         gc.save();
         gc.translate(x, y);
-        gc.drawImage(sprite, -sprite.getWidth() / 2, -sprite.getHeight() / 2);
+        gc.setFill(color);
+        gc.fillRect( bounds.getX(), bounds.getY(), 25, 25);
+        gc.drawImage(sprite, bounds.getX(), bounds.getY(), 25, 25);
         gc.restore();
-    }
-    private void randomizePosition(double w, double h) {
-        Random random = new Random();
-        double gunWidth = sprite.getWidth();
-        double gunHeight = sprite.getHeight();
-
-        // Generate random x and y positions within the canvas limits
-        x = random.nextDouble() * (w - gunWidth);
-        y = random.nextDouble() * (h - gunHeight);
-
-        // Check for collisions with other objects
-        boolean collided = checkCollisions();
-        if (collided) {
-            // If a collision occurred, recursively generate new random positions
-            randomizePosition(w,h);
-        }
     }
 
     // Getters and Setters

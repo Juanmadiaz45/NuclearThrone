@@ -102,16 +102,14 @@ public class GameViewController implements Initializable {
         Image gun2Image = new Image("file:" + HelloApplication.class.getResource("weirdRevolver.png").getPath());
         Image gun3Image = new Image("file:" + HelloApplication.class.getResource("glock.png").getPath());
 
-        gun1 = new Gun(0, 0, gun1Image, canvas, new Vector(canvas.getWidth() - 25, canvas.getHeight() - 25));
-        gun2 = new Gun(0, 0, gun2Image, canvas, new Vector(25, 25));
-        gun3 = new Gun(0, 0, gun3Image, canvas, new Vector(25, -25));
-
+        gun1 = new Gun(0, 0, gun1Image, canvas, generateRandomPosition(),Color.GREEN);
+        gun2 = new Gun(0, 0, gun2Image, canvas,generateRandomPosition(),Color.ORANGE);
+        gun3 = new Gun(0, 0, gun3Image, canvas, generateRandomPosition(),Color.BLUE);
 
         gunsInFloor.add(gun1);
         gunsInFloor.add(gun2);
         gunsInFloor.add(gun3);
         Game.getInstance().setGunsOnFloor(gunsInFloor);
-
 
         createMap1();
         createMap2();
@@ -120,7 +118,6 @@ public class GameViewController implements Initializable {
         obstacles=map1;
 
         createRandomEnemies(level);
-
 
         draw();
 
@@ -189,12 +186,13 @@ public class GameViewController implements Initializable {
                     gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
                     for (Gun gun : gunsInFloor) {
-                        gun.render(gc);
+                        gun.render();
                     }
 
                     for (Gun gun : gunsInFloor) {
                         if (avatar.collidesWith(gun)) {
                             avatar.setGun(gun);
+                            avatar.color=gun.color;
                             gunsInFloor.remove(gun);
                             break;
                         }
@@ -202,8 +200,14 @@ public class GameViewController implements Initializable {
 
                     if (avatar.hasGun()) {
                         Gun currentGun = avatar.getGun();
-                        currentGun.setPos(new Vector(10, 10));
-                        currentGun.render(gc);
+                        gc.setFill(currentGun.color);
+                        //Font font = new Font("Impact", 38);
+                        //gc.setFont(font);
+                        gc.fillText("Current Gun: ", 5,140);
+                        currentGun.setPos(new Vector(15, 160));
+
+
+                        currentGun.render();
                     }
 
                     drawObstacles();
@@ -427,37 +431,32 @@ public class GameViewController implements Initializable {
             avatar.draw();
             avatar.manageBullets(avatars);
             life.setProgress((double) avatar.getHearts() / 3.0);
-            if (bullets != null) {//los enemigos tienen bullets null
+            if (bullets != null) {//Aqui solo entra el avatar del jugador, los enemigos tienen bullets null
                 bullets.setProgress((double) avatar.numBullets / GameViewController.RELOAD_FACTOR);
                 int deadEnemies=0;
                 for (int i = 1; i < avatars.size(); i++) { // verificar enemigos matados
                     if (!avatars.get(i).isAlive) deadEnemies++;
-                }score=deadEnemies*100;
+                }
+                score=deadEnemies*100;
                 scoreLbl.setText("Puntaje: " + score);
                 if(deadEnemies == avatars.size() - 1 && avatar.bounds.intersects(obstacles.get(0).bounds.getBoundsInParent())) {//cambiar de mapa
                     //Si todos los enemigos estan muertos y colisiona con el portal
                     actualMap++;
-
                     switch (actualMap){
                         case 2: obstacles = map2; createRandomEnemies(level+1);break;
                         case 3: obstacles=map3; createRandomEnemies(level+2); break;
                         case 4: isRunning = false;
                     }
-
-
                 }
             }
-
         } else {
             life.setProgress(0);
             if (bullets != null)  bullets.setProgress(0);
-
             return false;
         }
         return true;
     }
-//    score += 10;
-//    scoreLbl.setText("Puntaje: " + score);
+
     public boolean detectCollisionRight(Avatar avatar){
 
         for(int i = 1; i < obstacles.size(); i++){
@@ -594,7 +593,6 @@ public class GameViewController implements Initializable {
     public void setGunsInFloor(List<Gun> gunsInFloor) {
         this.gunsInFloor = gunsInFloor;
     }
-
 
     public void setLevel(int level) {
         GameViewController.level = level;

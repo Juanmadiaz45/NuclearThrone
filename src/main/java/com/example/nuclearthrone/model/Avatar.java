@@ -57,8 +57,10 @@ public class Avatar {
     }
 
     public boolean collidesWith(Gun gun) {
-        Rectangle gunBounds = new Rectangle(gun.getX() - 12.5, gun.getY() - 12.5, 25, 25);
-        return bounds.intersects(gunBounds.getBoundsInLocal());
+         if(bounds.intersects(gun.bounds.getBoundsInParent())){
+             System.out.println("Gun COlission");
+            return true;
+         }   return false;
     }
 
     public void setGun(Gun gun) {
@@ -87,9 +89,7 @@ public class Avatar {
     }
 
     public void moveForward(){
-
         int factor = 20;
-
         if((pos.x + direction.x > factor && pos.x + direction.x < canvas.getWidth() - factor) &&
                 (pos.y + direction.y > factor && pos.y + direction.y < canvas.getHeight() - factor)){
 
@@ -103,9 +103,7 @@ public class Avatar {
     }
 
     public void moveBackward() {
-
         int factor = 20;
-
         if((pos.x - direction.x > factor && pos.x - direction.x < canvas.getWidth() - factor) &&
                 (pos.y - direction.y > factor && pos.y - direction.y < canvas.getHeight() - factor)){
 
