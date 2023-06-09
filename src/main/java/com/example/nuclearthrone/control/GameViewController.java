@@ -214,6 +214,15 @@ public class GameViewController implements Initializable {
                     gc.setFill(Color.BLACK);
                     gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
+                    for (Avatar enemy : avatars.subList(1, avatars.size())) {
+                        for (int i = enemy.getBullets().size() - 1; i >= 0; i--) {
+                            Bullet bullet = enemy.getBullets().get(i);
+                            if (checkCollisionShot(bullet.getPosition())) {
+                                enemy.getBullets().remove(i); // Elimina el disparo si hay colisión
+                            }
+                        }
+                    }
+
                     for (Gun gun : gunsInFloor) {
                         gun.render();
                     }
@@ -238,6 +247,14 @@ public class GameViewController implements Initializable {
 
                         currentGun.render();
                     }
+
+                    for (int i = avatar.getBullets().size() - 1; i >= 0; i--) {
+                        Bullet bullet = avatar.getBullets().get(i);
+                        if (checkCollisionShot(bullet.getPosition())) {
+                            avatar.getBullets().remove(i); // Elimina el disparo si hay colisión
+                        }
+                    }
+
 
                     drawObstacles();
 
@@ -318,6 +335,22 @@ public class GameViewController implements Initializable {
                 }
                 break;
         }
+    }
+
+    private boolean checkCollisionShot(Vector shotPosition) {
+        for (Obstacle obstacle : obstacles) {
+            if (obstacle.bounds.contains(shotPosition.getX(), shotPosition.getY())) {
+                return true; // Hay colisión con un obstáculo
+            }
+        }
+
+        for (Avatar avatar : avatars) {
+            if (avatar.bounds.contains(shotPosition.getX(), shotPosition.getY()) && !avatar.equals(avatar)) {
+                return true; // Hay colisión con un avatar enemigo
+            }
+        }
+
+        return false; // No hay colisión
     }
 
 

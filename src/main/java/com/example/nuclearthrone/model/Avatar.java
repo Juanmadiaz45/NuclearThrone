@@ -205,4 +205,8 @@ public class Avatar {
     public int getNumBullets(){
         return numBullets;
     }
+
+    public List<Bullet> getBullets(){
+        return bullets;
+    }
 }
